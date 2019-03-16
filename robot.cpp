@@ -1,3 +1,4 @@
+//This is the level design
 #include <stdlib.h>
 #include <stdio.h>    
 #include <string.h>
@@ -11,8 +12,7 @@ using namespace std;
 int Window_ID;
 int Window_Width = 600;
 int Window_Height = 600;
-#define PROGRAM_TITLE "Tyler Siwy"
-
+#define PROGRAM_TITLE "Levels template"
 float hScale = 2.0;
 float eyeX = 0;
 float eyeY = 0;
@@ -26,16 +26,16 @@ double rotate_sphere = 0;
 bool rS = true;
 bool rC = true;
 bool rP = true;
-
+static bool paused=false;
 GLUquadric *eyeQuad = gluNewQuadric();
 GLUquadric *antQuad = gluNewQuadric();
-
 void Display(void);
 void MyInit();
 void myKeyboardKey(unsigned char key, int x, int y);
 void myMouse(int button, int state, int x, int y);
 void drawHead();
 void specialKeys( int key, int x, int y );
+void specialKeysUp( int key, int x, int y );
 void rotateObjects();
 void drawEyes();
 void drawAntenna();
@@ -51,17 +51,19 @@ int main (int argc, char **argv){
 
    // Create and Open a window with its title.
    Window_ID = glutCreateWindow(PROGRAM_TITLE);
-
-   // Register and install the callback function to do the drawing. 
+   if(!paused){
+   // Register and install the callback function to do the drawing.
    glutDisplayFunc(&Display);
 
    // If there's nothing to do, draw.
    glutIdleFunc(&Display);
-
+   }
    glEnable(GL_DEPTH_TEST);
    MyInit();
 
    // Input functions
+   glutSpecialFunc(&specialKeys);/////////////////////
+   glutSpecialUpFunc(&specialKeysUp);///////////////////
    glutKeyboardFunc(&myKeyboardKey);
    glutMouseFunc(myMouse);
 
@@ -69,8 +71,88 @@ int main (int argc, char **argv){
    return 0;
 }
 
+///////////////////////////
+//The special keys currently only F1-F12
+//the only purpose of these is to change
+//the view of the camera around the robot
+//as well F1-F3 changes the angle of the robots head
+///////////////////////////
+void specialKeys( int key, int x, int y ){
+   switch(key){
+      case GLUT_KEY_F1: 
+	 cout << "F1";
+	 //turn head to face forwards (the default)
+	 break;
+      case GLUT_KEY_F2:
+	 cout << "F2";
+	 eyeX = -5.0;
+	    eyeY = -10.0;
+	    eyeZ = 5.0;
+	 //turn robot head to the right
+	 //when unpressed turn head forward(the default)
+	 break;
+      case GLUT_KEY_F3:
+	 cout << "F3";
+	 //turn robot head to the left
+	 //when unpressed turn head forward(the default)
+	 break;
+      case GLUT_KEY_F4:
+	 cout << "F4";
+	 //makes the view go back to the regular view
+	 break;
+      case GLUT_KEY_F5:
+	 cout << "F5";
+	 //looks at robot from the BACK LEFT
+	 break;
+      case GLUT_KEY_F6:
+	 cout << "F6";
+	 //looks at robot from the BACK RIGHT
+	 break;
+      case GLUT_KEY_F7:
+	 cout << "F7";
+	 //looks at robot from the FRONT RIGHT
+	 break;
+      case GLUT_KEY_F8:
+	 cout << "F8";
+	 //looks at robot from the FRONT LEFT
+	 break;
+      case GLUT_KEY_F9:
+	 cout << "F9";
+	 //looks at robot from the BACK LEFT at GREATER distance
+	 break;
+      case GLUT_KEY_F10:
+	 cout << "F10";
+	 //looks at robot from the BACK RIGHT at GREATER distance
+	 break;
+      case GLUT_KEY_F11:
+	 cout << "F11";
+	 //looks at robot from the FRONT RIGHT at GREATER distance
+	 break;
+      case GLUT_KEY_F12:
+	 cout << "F12";
+	 //looks at robot from the FRONT LEFT at GREATER distance
+	 break;
+
+      default:
+	 printf ("KP: No action for %d.\n", key);
+	 break;
+   }
+}
+
+void specialKeysUp( int key, int x, int y ){
+   switch(key){
+      case GLUT_KEY_F2:
+	 case GLUT_KEY_F3:
+	 cout << "F2UP ";
+	 break;
+      default:
+	 printf ("KP: No action for %d.\n", key);
+	 break;
+   }
+}
 
 void Display(void){
+   
    glLoadIdentity();
    glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
@@ -92,18 +174,21 @@ void myKeyboardKey(unsigned char key, int x, int y){
    switch(key){
       cout << key;
       case 'z': // z
-	 rC = rS = true;
-	 rP = false;	 
+	 //This will now move the robot forward
 	 break;
       case 'a':
-	 rC = false;
-	 rP = rS = true;
+	 //turn robot right
 	 break;
       case 'q':
-	 rS = rP = rC = false;
+	 //turn robot left
 	 break;
-      case 32:
-	 rS = rP = rC = true; 
+	 case 'p':
+	    //pauses the game, press again to unpause
+	    paused= !paused;
+	    break;
+      case 'r':
+	 //return the robot to the origin if the robot is on the boundary
+	 //do nothing if not on boundary
 	 break;
       default:
 	 printf ("KP: No action for %d.\n", key);
@@ -115,12 +200,13 @@ void myMouse(int button, int state, int x, int y){
    switch(button){
       case GLUT_LEFT_BUTTON:
 	 if(state == GLUT_DOWN ){
-	    eyeX = 0;
-	    eyeY = 0;
-	    eyeZ = -15.0;
+	    
+	        eyeX = 0.0;
+	        eyeY = 0.0;
+	        eyeZ = -15.0;
 	 }else{
-	    eyeX = eyeY = 0;
-	    eyeZ = 5;
+	        eyeX = eyeY = 0;
+	        eyeZ = 5;
 	 }
 	 break;
       case GLUT_RIGHT_BUTTON:
