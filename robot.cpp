@@ -79,6 +79,19 @@ int main (int argc, char **argv){
    return 0;
 }
 
+void Display(void){
+   //testerino
+   glLoadIdentity();
+   //glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   gluPerspective(90, 1.0, 20.0, 2.0);
+   gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
+   // Clear the color and depth
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glMatrixMode(GL_MODELVIEW);
+   drawHead();
+   glutSwapBuffers();
+}
+
 ///////////////////////////
 //The special keys currently only F1-F12
 //the only purpose of these is to change
@@ -94,8 +107,8 @@ void specialKeys( int key, int x, int y ){
       case GLUT_KEY_F2:
 	 cout << "F2";
 	 eyeX = -5.0;
-	    eyeY = -10.0;
-	    eyeZ = 5.0;
+	 eyeY = -10.0;
+	 eyeZ = 5.0;
 	 //turn robot head to the right
 	 //when unpressed turn head forward(the default)
 	 break;
@@ -159,18 +172,7 @@ void specialKeysUp( int key, int x, int y ){
    }
 }
 
-void Display(void){
-   //testerino
-   glLoadIdentity();
-   //glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   gluPerspective(90, 1.0, 20.0, 2.0);
-   gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
-   // Clear the color and depth
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   glMatrixMode(GL_MODELVIEW);
-   drawHead();
-   glutSwapBuffers();
-}
+
 
 
 
@@ -274,6 +276,8 @@ void drawAntenna(){
 }
 
 void drawNeck(){
+   float neckRadius = hScale * 0.80;
+   gluCylinder(neckQuad, neckRadius, neckRadius, 1, 10, 10);
 }
 
 void drawBody(){
