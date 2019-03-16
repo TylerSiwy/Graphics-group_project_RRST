@@ -7,28 +7,37 @@
 #include <GL/glu.h>  // GLU support library.
 #include <GL/glut.h> // GLUT support library.
 #include <iostream>
+#include "project_helpers.cpp"
+
 using namespace std;
 
+//System Vars
 int Window_ID;
-int Window_Width = 600;
-int Window_Height = 600;
-#define PROGRAM_TITLE "Levels template"
-float hScale = 2.0;
+int Window_Width = 900;
+int Window_Height = 900;
+#define PROGRAM_TITLE "ROBOT RAMPAGE"
+
+//Lookat Vars
 float eyeX = 0;
 float eyeY = 0;
-float eyeZ = -5;
+float eyeZ = 15;
 float lookAtX = 0;
 float lookAtY = 0;
 float lookAtZ = 0;
-double rotate_pyramid = 0; 
-double rotate_cube = 0;
-double rotate_sphere = 0;
-bool rS = true;
-bool rC = true;
-bool rP = true;
-static bool paused=false;
 GLUquadric *eyeQuad = gluNewQuadric();
+
+//Robot Vars
+float hScale = 2.0;
+float antX = 0;
+float antY = 0;
+float antZ = 0;
+float antAngle = 0;
 GLUquadric *antQuad = gluNewQuadric();
+float rotate_cube = 0;
+GLUquadric *neckQuad = gluNewQuadric();
+
+static bool paused=false;
+
 void Display(void);
 void MyInit();
 void myKeyboardKey(unsigned char key, int x, int y);
@@ -39,8 +48,7 @@ void specialKeysUp( int key, int x, int y );
 void rotateObjects();
 void drawEyes();
 void drawAntenna();
-void drawCube(float xScale, float yScale, float zScale,
-	      float xTrans, float yTrans, float zTrans);
+void rotateAntena();
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -154,7 +162,8 @@ void specialKeysUp( int key, int x, int y ){
 void Display(void){
    //testerino
    glLoadIdentity();
-   glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   //glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   gluPerspective(90, 1.0, 20.0, 2.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -162,6 +171,8 @@ void Display(void){
    drawHead();
    glutSwapBuffers();
 }
+
+
 
 void MyInit(){
    // Color to clear color buffer to.
@@ -184,7 +195,7 @@ void myKeyboardKey(unsigned char key, int x, int y){
 	 break;
 	 case 'p':
 	    //pauses the game, press again to unpause
-	    paused= !paused;
+	    paused = !paused;
 	    break;
       case 'r':
 	 //return the robot to the origin if the robot is on the boundary
@@ -203,10 +214,10 @@ void myMouse(int button, int state, int x, int y){
 	    
 	        eyeX = 0.0;
 	        eyeY = 0.0;
-	        eyeZ = -15.0;
+	        eyeZ = 15.0;
 	 }else{
 	        eyeX = eyeY = 0;
-	        eyeZ = 5;
+	        eyeZ = -15;
 	 }
 	 break;
       case GLUT_RIGHT_BUTTON:
@@ -219,9 +230,9 @@ void myMouse(int button, int state, int x, int y){
 	 break;	 
    }
 }
+
 void drawEyes(){
    float eyeRadius = 0.5;
-   float eyeHeight = 0.25;
    float resolution = 10;
    float headCenterOffset = hScale + 0.01;
    //Right EyebackHeadScale
@@ -239,19 +250,34 @@ void drawEyes(){
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
 }
+void rotateAntena(){
+   antAngle += 10;
+   glTranslatef(antX, antY, antZ);
+   glRotatef(antAngle, 0, 1, 0);
+   glTranslatef(-antX, -antY, -antZ);
+}
 
 void drawAntenna(){
+   antY=hScale;
    float antRadius = 0.15;
    float antHeight = 1.35;
    float antRotation = 270;
    glPushMatrix();
-   glTranslatef(0, hScale, 0);
+   rotateAntena();
+   glTranslatef(antX, antY, antZ);
    glRotatef(antRotation, 1.0, 0 ,0.0);
    glColor3f(0.6,0.1,0.3); //Purple
    gluCylinder(antQuad, antRadius, 0.05, antHeight, 10, 10); //Cone Shaped
-   drawCube(0.5, 0.1, 0.2, 0, 0, antHeight);
+   drawCube(0.8, 0.3, 0.1, 0, 0, antHeight);
    glPopMatrix();
    
+}
+
+void drawNeck(){
+}
+
+void drawBody(){
+
 }
 
 void drawHead(){  
@@ -270,72 +296,5 @@ void drawHead(){
    glVertex3f(-backHeadScale, backHeadScale,-hScale-0.1);
    glVertex3f(-backHeadScale, -backHeadScale, -hScale-0.1);
    glEnd();
-   glPopMatrix();
-}
-
-void drawCube(float xScale, float yScale, float zScale,
-	      float xTrans, float yTrans, float zTrans){  
-   glPushMatrix();
-   glTranslatef(xTrans ,yTrans, zTrans);
-   /*Cutting these in half since each vertex is the scale distance from the
-     centerpoint and we want it to be to the scale provided, not twice as large.
-     We could probably find a better solution later. */
-   /*xScale = xScale / 2;
-   yScale = yScale / 2;
-   zScale = zScale / 2;*/
-   // Puke Green - FRONT
-   glBegin(GL_POLYGON);
-   glColor3f(0.1, 0.5, 0.5);
-   glVertex3f(xScale, -yScale, -zScale); 
-   glVertex3f(xScale, yScale, -zScale); 
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(-xScale, -yScale, -zScale); 
-   glEnd();
- 
-   // Brown Face - BACK
-   glBegin(GL_POLYGON);
-   glColor3f(0.8, 0.5, 0.3);  
-   glVertex3f(-xScale, -yScale, zScale);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(xScale, yScale, zScale);
-   glVertex3f(xScale, -yScale, zScale);
-   glEnd();
- 
-   // Purple side - RIGHT
-   glBegin(GL_POLYGON);
-   glColor3f(1.0, 0.0, 1.0);
-   glVertex3f( xScale, -yScale, zScale);
-   glVertex3f( xScale, yScale, zScale);
-   glVertex3f( xScale, yScale, -zScale);
-   glVertex3f( xScale, -yScale, -zScale);
-   glEnd();
- 
-   // Green side - LEFT
-   glBegin(GL_POLYGON);
-   glColor3f(0.0, 1.0, 0.0);
-   glVertex3f(-xScale, -yScale, -zScale);
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(-xScale, -yScale, zScale);
-   glEnd();
- 
-   // Blue side - TOP
-   glBegin(GL_POLYGON);
-   glColor3f(0.0, 0.0, 1.0);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(xScale, yScale, -zScale);
-   glVertex3f(xScale, yScale, zScale);
-   glEnd();
- 
-   // Red side - BOTTOM
-   glBegin(GL_POLYGON);
-   glColor3f(1.0, 0.0, 0.0);
-   glVertex3f(-xScale, -yScale, -zScale);
-   glVertex3f(-xScale, -yScale, zScale);
-   glVertex3f(xScale, -yScale, zScale);
-   glVertex3f(xScale, -yScale, -zScale);
-   glEnd();
-
    glPopMatrix();
 }
