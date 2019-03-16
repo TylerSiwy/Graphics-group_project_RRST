@@ -20,6 +20,10 @@ float eyeZ = -5;
 float lookAtX = 0;
 float lookAtY = 0;
 float lookAtZ = 0;
+float antX = 0;
+float antY = 0;
+float antZ = 0;
+float antAngle = 0;
 double rotate_pyramid = 0; 
 double rotate_cube = 0;
 double rotate_sphere = 0;
@@ -29,6 +33,7 @@ bool rP = true;
 static bool paused=false;
 GLUquadric *eyeQuad = gluNewQuadric();
 GLUquadric *antQuad = gluNewQuadric();
+
 void Display(void);
 void MyInit();
 void myKeyboardKey(unsigned char key, int x, int y);
@@ -41,6 +46,7 @@ void drawEyes();
 void drawAntenna();
 void drawCube(float xScale, float yScale, float zScale,
 	      float xTrans, float yTrans, float zTrans);
+void rotateAntena();
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -163,6 +169,8 @@ void Display(void){
    glutSwapBuffers();
 }
 
+
+
 void MyInit(){
    // Color to clear color buffer to.
    glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -221,7 +229,6 @@ void myMouse(int button, int state, int x, int y){
 }
 void drawEyes(){
    float eyeRadius = 0.5;
-   float eyeHeight = 0.25;
    float resolution = 10;
    float headCenterOffset = hScale + 0.01;
    //Right EyebackHeadScale
@@ -239,17 +246,25 @@ void drawEyes(){
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
 }
+void rotateAntena(){
+   antAngle+=10;
+   glTranslatef(antX, antY, antZ);
+   glRotatef(antAngle, 0, 1, 0);
+   glTranslatef(-antX, -antY, -antZ);
+}
 
 void drawAntenna(){
+   antY=hScale;
    float antRadius = 0.15;
    float antHeight = 1.35;
    float antRotation = 270;
    glPushMatrix();
-   glTranslatef(0, hScale, 0);
+   rotateAntena();
+   glTranslatef(antX, antY, antZ);
    glRotatef(antRotation, 1.0, 0 ,0.0);
    glColor3f(0.6,0.1,0.3); //Purple
    gluCylinder(antQuad, antRadius, 0.05, antHeight, 10, 10); //Cone Shaped
-   drawCube(0.5, 0.1, 0.2, 0, 0, antHeight);
+   drawCube(0.8, 0.3, 0.1, 0, 0, antHeight);
    glPopMatrix();
    
 }
