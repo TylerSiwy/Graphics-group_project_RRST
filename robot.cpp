@@ -152,7 +152,7 @@ void specialKeysUp( int key, int x, int y ){
 }
 
 void Display(void){
-   
+   //testerino
    glLoadIdentity();
    glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
