@@ -16,7 +16,7 @@ int Window_ID;
 int Window_Width = 900;
 int Window_Height = 900;
 #define PROGRAM_TITLE "ROBOT RAMPAGE"
-
+float angleViewDist=15;
 //Lookat Vars
 float eyeX = 0;
 float eyeY = 0;
@@ -59,23 +59,25 @@ int main (int argc, char **argv){
 
    // Create and Open a window with its title.
    Window_ID = glutCreateWindow(PROGRAM_TITLE);
-   if(!paused){
+   if(paused==false){
    // Register and install the callback function to do the drawing.
    glutDisplayFunc(&Display);
-
+   
    // If there's nothing to do, draw.
    glutIdleFunc(&Display);
+   // Input functions
+   glutSpecialFunc(&specialKeys);
+   glutSpecialUpFunc(&specialKeysUp);
+   // glutKeyboardFunc(&myKeyboardKey)
+   glutMouseFunc(myMouse);
    }
+   
+   glutKeyboardFunc(&myKeyboardKey);
    glEnable(GL_DEPTH_TEST);
    MyInit();
 
-   // Input functions
-   glutSpecialFunc(&specialKeys);/////////////////////
-   glutSpecialUpFunc(&specialKeysUp);///////////////////
-   glutKeyboardFunc(&myKeyboardKey);
-   glutMouseFunc(myMouse);
 
-   glutMainLoop(); 
+     glutMainLoop(); 
    return 0;
 }
 
@@ -83,7 +85,7 @@ void Display(void){
    //testerino
    glLoadIdentity();
    //glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   gluPerspective(90, 1.0, 20.0, 2.0);
+   gluPerspective(45, 1.0, 80.0, 1.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -100,58 +102,56 @@ void Display(void){
 ///////////////////////////
 void specialKeys( int key, int x, int y ){
    switch(key){
-      case GLUT_KEY_F1: 
-	 cout << "F1";
-	 //turn head to face forwards (the default)
+      case GLUT_KEY_F1://turn head to face forwards (the default)
 	 break;
-      case GLUT_KEY_F2:
-	 cout << "F2";
-	 eyeX = -5.0;
-	 eyeY = -10.0;
-	 eyeZ = 5.0;
-	 //turn robot head to the right
-	 //when unpressed turn head forward(the default)
+      case GLUT_KEY_F2://turn robot head to the right
 	 break;
-      case GLUT_KEY_F3:
-	 cout << "F3";
-	 //turn robot head to the left
-	 //when unpressed turn head forward(the default)
+      case GLUT_KEY_F3://turn robot head to the left
 	 break;
-      case GLUT_KEY_F4:
-	 cout << "F4";
-	 //makes the view go back to the regular view
+      case GLUT_KEY_F4://makes the view go back to the regular view
+	 eyeX = 0;
+	 eyeY = 0;
+	 eyeZ = angleViewDist;
 	 break;
-      case GLUT_KEY_F5:
-	 cout << "F5";
-	 //looks at robot from the BACK LEFT
+      case GLUT_KEY_F5://looks at robot from the BACK LEFT
+	 eyeX =  angleViewDist;
+	 eyeY = -angleViewDist;
+	 eyeZ =  angleViewDist;
 	 break;
-      case GLUT_KEY_F6:
-	 cout << "F6";
-	 //looks at robot from the BACK RIGHT
+      case GLUT_KEY_F6://looks at robot from the BACK RIGHT
+	 eyeX = -angleViewDist;
+	 eyeY = -angleViewDist;
+	 eyeZ =  angleViewDist;
 	 break;
-      case GLUT_KEY_F7:
-	 cout << "F7";
-	 //looks at robot from the FRONT RIGHT
+      case GLUT_KEY_F7://looks at robot from the FRONT RIGHT
+	 eyeX = -angleViewDist;
+	 eyeY = -angleViewDist;
+	 eyeZ = -angleViewDist;
 	 break;
-      case GLUT_KEY_F8:
-	 cout << "F8";
-	 //looks at robot from the FRONT LEFT
+      case GLUT_KEY_F8://looks at robot from the FRONT LEFT
+	 eyeX =  angleViewDist;
+	 eyeY = -angleViewDist;
+	 eyeZ = -angleViewDist;
 	 break;
-      case GLUT_KEY_F9:
-	 cout << "F9";
-	 //looks at robot from the BACK LEFT at GREATER distance
+      case GLUT_KEY_F9://looks at robot from the BACK LEFT at GREATER dist
+	 eyeX =  angleViewDist*2;
+	 eyeY = -angleViewDist*2;
+	 eyeZ =  angleViewDist*2;
 	 break;
-      case GLUT_KEY_F10:
-	 cout << "F10";
-	 //looks at robot from the BACK RIGHT at GREATER distance
+      case GLUT_KEY_F10://looks at robot from the BACK RIGHT at GREATER dist
+	 eyeX = -angleViewDist*2;
+	 eyeY = -angleViewDist*2;
+	 eyeZ =  angleViewDist*2;
 	 break;
-      case GLUT_KEY_F11:
-	 cout << "F11";
-	 //looks at robot from the FRONT RIGHT at GREATER distance
+      case GLUT_KEY_F11://looks at robot from the FRONT RIGHT at GREATER dist
+	 eyeX = -angleViewDist*2;
+	 eyeY = -angleViewDist*2;
+	 eyeZ = -angleViewDist*2;
 	 break;
-      case GLUT_KEY_F12:
-	 cout << "F12";
-	 //looks at robot from the FRONT LEFT at GREATER distance
+      case GLUT_KEY_F12://looks at robot from the FRONT LEFT at GREATER dist
+	 eyeX =  angleViewDist*2;
+	 eyeY = -angleViewDist*2;
+	 eyeZ = -angleViewDist*2;
 	 break;
 
       default:
@@ -167,24 +167,21 @@ void specialKeysUp( int key, int x, int y ){
 	 cout << "F2UP ";
 	 break;
       default:
-	 printf ("KP: No action for %d.\n", key);
 	 break;
    }
 }
-
-
-
-
 
 void MyInit(){
    // Color to clear color buffer to.
    glClearColor(0.0, 0.0, 0.0, 0.0);
    glEnable(GL_CULL_FACE);
    glCullFace(GL_BACK);
+   glEnable(GL_DEPTH_TEST);
 }
 
 void myKeyboardKey(unsigned char key, int x, int y){
    switch(key){
+      // if(paused==false){
       cout << key;
       case 'z': // z
 	 //This will now move the robot forward
@@ -195,14 +192,16 @@ void myKeyboardKey(unsigned char key, int x, int y){
       case 'q':
 	 //turn robot left
 	 break;
-	 case 'p':
-	    //pauses the game, press again to unpause
-	    paused = !paused;
-	    break;
-      case 'r':
+	 case 'r':
 	 //return the robot to the origin if the robot is on the boundary
 	 //do nothing if not on boundary
 	 break;
+	 //     }
+	 case 'p':
+	    //pauses the game, press again to unpause
+	    paused = !paused;
+	    
+	    break;
       default:
 	 printf ("KP: No action for %d.\n", key);
 	 break;
@@ -217,6 +216,7 @@ void myMouse(int button, int state, int x, int y){
 	        eyeX = 0.0;
 	        eyeY = 0.0;
 	        eyeZ = 15.0;
+		//	cout<< paused;
 	 }else{
 	        eyeX = eyeY = 0;
 	        eyeZ = -15;
@@ -287,11 +287,12 @@ void drawBody(){
 void drawHead(){  
    float backHeadScale = hScale * 0.55;
    glPushMatrix();
+   drawAntenna();
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
    drawCube(hScale, hScale, hScale, 0, 0, 0);
    
    drawEyes();
-   drawAntenna();
+   // drawAntenna();
    // square on back of head for identification
    glBegin(GL_POLYGON);
    glColor3f(0.5, 0.5, 1.0);
