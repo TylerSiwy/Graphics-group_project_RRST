@@ -90,8 +90,8 @@ int main (int argc, char **argv){
 void Display(void){
    //testerino
    glLoadIdentity();
-   glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   // gluPerspective(45, 1.0, 80.0, 1.0);
+   // glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   gluPerspective(45, 1.0, 80.0, 1.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
