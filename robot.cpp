@@ -35,6 +35,12 @@ float antAngle = 0;
 GLUquadric *antQuad = gluNewQuadric();
 float rotate_cube = 0;
 GLUquadric *neckQuad = gluNewQuadric();
+float headX = 0;
+float headY = 0;
+float headZ = 0;
+float neckX = 0;
+float neckY = 0;
+float neckZ = 0;
 
 static bool paused=false;
 
@@ -48,7 +54,9 @@ void specialKeysUp( int key, int x, int y );
 void rotateObjects();
 void drawEyes();
 void drawAntenna();
+void drawNeck();
 void rotateAntena();
+void drawBody();
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -82,13 +90,14 @@ int main (int argc, char **argv){
 void Display(void){
    //testerino
    glLoadIdentity();
-   //glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   gluPerspective(90, 1.0, 20.0, 2.0);
+   glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   // gluPerspective(45, 1.0, 80.0, 1.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
    drawHead();
+   drawBody();
    glutSwapBuffers();
 }
 
@@ -172,15 +181,12 @@ void specialKeysUp( int key, int x, int y ){
    }
 }
 
-
-
-
-
 void MyInit(){
    // Color to clear color buffer to.
-   glClearColor(0.0, 0.0, 0.0, 0.0);
+   glClearColor(0.52, 0.8, 0.92, 0.0);
    glEnable(GL_CULL_FACE);
    glCullFace(GL_BACK);
+   glEnable(GL_DEPTH_TEST);
 }
 
 void myKeyboardKey(unsigned char key, int x, int y){
@@ -233,6 +239,27 @@ void myMouse(int button, int state, int x, int y){
    }
 }
 
+void drawHead(){  
+   float backHeadScale = hScale * 0.55;
+   glPushMatrix();
+   glTranslatef(headX, headY, headZ);
+   glRotatef(rotate_cube, 0.0, 0.0, 1.0);
+   drawCube(hScale, hScale, hScale, 0, 0, 0);
+   drawNeck();
+   drawEyes();
+   drawAntenna();
+   // square on back of head for identification
+   glBegin(GL_POLYGON);
+   glColor3f(0.5, 0.5, 1.0);
+   glVertex3f(backHeadScale, -backHeadScale, -hScale-0.1);
+   glVertex3f(backHeadScale, backHeadScale, -hScale-0.1);
+   glVertex3f(-backHeadScale, backHeadScale,-hScale-0.1);
+   glVertex3f(-backHeadScale, -backHeadScale, -hScale-0.1);
+   glEnd();
+   glPopMatrix();
+   glMatrixMode(GL_MODELVIEW);
+}
+
 void drawEyes(){
    float eyeRadius = 0.5;
    float resolution = 10;
@@ -247,7 +274,7 @@ void drawEyes(){
    //Left Eye
    glPushMatrix();
    glTranslatef(-hScale/2, hScale/3, headCenterOffset);
-      glRotatef(180, 0, 1, 0);
+   glRotatef(180, 0, 1, 0);
    glColor3f(1.0, 1.0, 1.0);
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
@@ -277,28 +304,36 @@ void drawAntenna(){
 
 void drawNeck(){
    float neckRadius = hScale * 0.80;
-   gluCylinder(neckQuad, neckRadius, neckRadius, 1, 10, 10);
-}
-
-void drawBody(){
-
-}
-
-void drawHead(){  
-   float backHeadScale = hScale * 0.55;
+   float neckHeight = 1;
    glPushMatrix();
-   glRotatef(rotate_cube, 0.0, 0.0, 1.0);
-   drawCube(hScale, hScale, hScale, 0, 0, 0);
-   
-   drawEyes();
-   drawAntenna();
-   // square on back of head for identification
-   glBegin(GL_POLYGON);
-   glColor3f(0.5, 0.5, 1.0);
-   glVertex3f(backHeadScale, -backHeadScale, -hScale-0.1);
-   glVertex3f(backHeadScale, backHeadScale, -hScale-0.1);
-   glVertex3f(-backHeadScale, backHeadScale,-hScale-0.1);
-   glVertex3f(-backHeadScale, -backHeadScale, -hScale-0.1);
-   glEnd();
+   glTranslatef(headX, headY-neckHeight*2, -hScale+neckRadius);
+   glRotatef(90, 1, 0, 0);
+   gluCylinder(neckQuad, neckRadius, neckRadius, neckHeight, 10, 10);
    glPopMatrix();
 }
+
+void drawBody(){  
+   float backPolyScale = hScale * 1.5 * 0.55;
+   glPushMatrix();
+   //glTranslatef(headX, headY, headZ);
+   //glRotatef(rotate_cube, 0.0, 0.0, 1.0);
+   //translate down by headScale, -1 for neck height * 2.25 for body height
+   drawCube(hScale*1.5, hScale*2, hScale*1.5, 0, -(hScale+1)*2.25, 0);  
+   // triangles on back of head for identification
+   glBegin(GL_POLYGON);
+   glColor3f(1.0, 0.1, 0.1);
+   glVertex3f(backPolyScale, -backPolyScale*4, -hScale*1.6);
+   glVertex3f(0, -backPolyScale*2, -hScale*1.6); //Point
+   glVertex3f(-backPolyScale, -backPolyScale*4, -hScale*1.6);
+   glEnd();
+   glBegin(GL_POLYGON);
+   glColor3f(1.0, 0.1, 0.1);
+   glVertex3f(backPolyScale, -backPolyScale*6, -hScale*1.6);
+   glVertex3f(0, -backPolyScale*4, -hScale*1.6); //Point
+   glVertex3f(-backPolyScale, -backPolyScale*6, -hScale*1.6);
+   glEnd();
+   glPopMatrix();
+   
+   glMatrixMode(GL_MODELVIEW);
+}
+
