@@ -13,6 +13,7 @@ int Window_Width = 600;
 int Window_Height = 600;
 #define PROGRAM_TITLE "Tyler Siwy"
 
+float hScale = 2.0;
 float eyeX = 0;
 float eyeY = 0;
 float eyeZ = 5;
@@ -27,6 +28,7 @@ bool rC = true;
 bool rP = true;
 
 GLUquadric *eyeQuad = gluNewQuadric();
+GLUquadric *antQuad = gluNewQuadric();
 
 void Display(void);
 void MyInit();
@@ -36,6 +38,8 @@ void drawHead();
 void specialKeys( int key, int x, int y );
 void rotateObjects();
 void drawEyes();
+void drawAntenna();
+void drawCube(float cubeScale, float xTrans, float yTrans, float zTrans);
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -72,8 +76,10 @@ void Display(void){
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
-   drawHead();
-   drawEyes();
+   //drawHead();
+   //drawEyes();
+   //drawAntenna();
+   drawCube(3,0,0,0);
    glutSwapBuffers();
 }
 
@@ -130,81 +136,155 @@ void myMouse(int button, int state, int x, int y){
    }
 }
 void drawEyes(){
-   float eyeRadius = 0.15;
+   float eyeRadius = 0.5;
    float eyeHeight = 0.25;
    float resolution = 10;
+   float headCenterOffset = hScale * 2 + 0.01;
    //Right Eye
    glPushMatrix();
-   glTranslatef(0.25,0.20,-2.51);
-   glColor3f(1.0,1.0,1.0);
+   glTranslatef(hScale/2, hScale/3, -headCenterOffset);
+   glColor3f(1.0,1.0, 1.0);
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
    //Left Eye
    glPushMatrix();
-   glTranslatef(-0.25, 0.20,-2.51);
-   glColor3f(1.0,1.0,1.0);
+   glTranslatef(-hScale/2, hScale/3, -headCenterOffset);
+   glColor3f(1.0, 1.0, 1.0);
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
 }
 
-void drawHead(){
+void drawAntenna(){
+   float antRadius = 0.15;
+   float antHeight = 1.35;
+   float antRotation = 270;
+   glPushMatrix();
+   glTranslatef(0, hScale, -hScale);
+   glRotatef(antRotation, 1.0, 0 ,0.0);
+   glColor3f(0.6,0.1,0.3); //Purple
+   gluCylinder(antQuad, antRadius, 0.05, antHeight, 10, 10); //Cone Shaped
+   glPopMatrix();
+   
+}
+
+void drawHead(){  
    glPushMatrix();
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
    glTranslatef(0 ,0,-2);
    // Puke Green - FRONT
    glBegin(GL_POLYGON);
    glColor3f(0.1, 0.5, 0.5);
-   glVertex3f(0.5, -0.5, -0.5); 
-   glVertex3f(0.5, 0.5, -0.5); 
-   glVertex3f(-0.5, 0.5, -0.5);
-   glVertex3f(-0.5, -0.5, -0.5); 
+   glVertex3f(hScale, -hScale, -hScale); 
+   glVertex3f(hScale, hScale, -hScale); 
+   glVertex3f(-hScale, hScale, -hScale);
+   glVertex3f(-hScale, -hScale, -hScale); 
    glEnd();
  
    // White side - BACK
    glBegin(GL_POLYGON);
    glColor3f(1.0, 1.0, 1.0);
-   glVertex3f(0.5, -0.5, 0.5);
-   glVertex3f(0.5, 0.5, 0.5);
-   glVertex3f(-0.5, 0.5, 0.5);
-   glVertex3f(-0.5, -0.5, 0.5);
+   glVertex3f(hScale, -hScale, hScale);
+   glVertex3f(hScale, hScale, hScale);
+   glVertex3f(-hScale, hScale, hScale);
+   glVertex3f(-0.5, -hScale, hScale);
    glEnd();
  
    // Purple side - RIGHT
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.0, 1.0);
-   glVertex3f( 0.5, -0.5, 0.5);
-   glVertex3f( 0.5, 0.5, 0.5);
-   glVertex3f( 0.5, 0.5, -0.5);
-   glVertex3f( 0.5, -0.5, -0.5);
+   glVertex3f( hScale, -hScale, hScale);
+   glVertex3f( hScale, hScale, hScale);
+   glVertex3f( hScale, hScale, -hScale);
+   glVertex3f( hScale, -hScale, -hScale);
    glEnd();
  
    // Green side - LEFT
    glBegin(GL_POLYGON);
    glColor3f(0.0, 1.0, 0.0);
-   glVertex3f(-0.5, -0.5, -0.5);
-   glVertex3f(-0.5, 0.5, -0.5);
-   glVertex3f(-0.5, 0.5, 0.5);
-   glVertex3f(-0.5, -0.5, 0.5);
+   glVertex3f(-hScale, -hScale, -hScale);
+   glVertex3f(-hScale, hScale, -hScale);
+   glVertex3f(-hScale, hScale, hScale);
+   glVertex3f(-hScale, -hScale, hScale);
    glEnd();
  
    // Blue side - TOP
    glBegin(GL_POLYGON);
    glColor3f(0.0, 0.0, 1.0);
-   glVertex3f(-0.5, 0.5, 0.5);
-   glVertex3f(-0.5, 0.5, -0.5);
-   glVertex3f(0.5, 0.5, -0.5);
-   glVertex3f(0.5, 0.5, 0.5);
+   glVertex3f(-hScale, hScale, hScale);
+   glVertex3f(-hScale, hScale, -hScale);
+   glVertex3f(hScale, hScale, -hScale);
+   glVertex3f(hScale, hScale, hScale);
    glEnd();
  
    // Red side - BOTTOM
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.0, 0.0);
-   glVertex3f(-0.5, -0.5, -0.5);
-   glVertex3f(-0.5, -0.5, 0.5);
-   glVertex3f(0.5, -0.5, 0.5);
-   glVertex3f(0.5, -0.5, -0.5);
+   glVertex3f(-hScale, -hScale, -hScale);
+   glVertex3f(-hScale, -hScale, hScale);
+   glVertex3f(hScale, -hScale, hScale);
+   glVertex3f(hScale, -hScale, -hScale);
    glEnd();
 
    glPopMatrix();
+}
 
+void drawCube(float cubeScale, float xTrans, float yTrans, float zTrans){  
+   glPushMatrix();
+   glTranslatef(xTrans ,yTrans, zTrans);
+
+   // Puke Green - FRONT
+   glBegin(GL_POLYGON);
+   glColor3f(0.1, 0.5, 0.5);
+   glVertex3f(hScale, -hScale, -hScale); 
+   glVertex3f(hScale, hScale, -hScale); 
+   glVertex3f(-hScale, hScale, -hScale);
+   glVertex3f(-hScale, -hScale, -hScale); 
+   glEnd();
+ 
+   // White side - BACK
+   glBegin(GL_POLYGON);
+   glColor3f(1.0, 1.0, 1.0);
+   glVertex3f(hScale, -hScale, hScale);
+   glVertex3f(hScale, hScale, hScale);
+   glVertex3f(-hScale, hScale, hScale);
+   glVertex3f(-0.5, -hScale, hScale);
+   glEnd();
+ 
+   // Purple side - RIGHT
+   glBegin(GL_POLYGON);
+   glColor3f(1.0, 0.0, 1.0);
+   glVertex3f( hScale, -hScale, hScale);
+   glVertex3f( hScale, hScale, hScale);
+   glVertex3f( hScale, hScale, -hScale);
+   glVertex3f( hScale, -hScale, -hScale);
+   glEnd();
+ 
+   // Green side - LEFT
+   glBegin(GL_POLYGON);
+   glColor3f(0.0, 1.0, 0.0);
+   glVertex3f(-hScale, -hScale, -hScale);
+   glVertex3f(-hScale, hScale, -hScale);
+   glVertex3f(-hScale, hScale, hScale);
+   glVertex3f(-hScale, -hScale, hScale);
+   glEnd();
+ 
+   // Blue side - TOP
+   glBegin(GL_POLYGON);
+   glColor3f(0.0, 0.0, 1.0);
+   glVertex3f(-hScale, hScale, hScale);
+   glVertex3f(-hScale, hScale, -hScale);
+   glVertex3f(hScale, hScale, -hScale);
+   glVertex3f(hScale, hScale, hScale);
+   glEnd();
+ 
+   // Red side - BOTTOM
+   glBegin(GL_POLYGON);
+   glColor3f(1.0, 0.0, 0.0);
+   glVertex3f(-hScale, -hScale, -hScale);
+   glVertex3f(-hScale, -hScale, hScale);
+   glVertex3f(hScale, -hScale, hScale);
+   glVertex3f(hScale, -hScale, -hScale);
+   glEnd();
+
+   glPopMatrix();
 }
