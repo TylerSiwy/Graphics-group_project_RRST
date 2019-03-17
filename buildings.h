@@ -5,7 +5,7 @@ using namespace std;
 
 class Building {
   public:
-   virtual void draw()=0;
+   virtual void draw(float scale)=0;
   protected:
    GLUquadric *quad;
    int buildingScale;
