@@ -19,7 +19,7 @@ int Window_Height = 900;
 float angleViewDist=15;
 //Determines if game is paused or not
 static bool paused=false;
-
+//#define SIZE 512// this is the buffer for mouse clicking
 //Lookat Vars
 float eyeX = 0;
 float eyeY = 0;
@@ -108,8 +108,8 @@ void Display(void){
 
    //testerino
    glLoadIdentity();
-   glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   //gluPerspective(45, 1.0, 80.0, 1.0);
+   //glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   gluPerspective(45, 1.0, 80.0, 1.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -251,17 +251,9 @@ void myKeyboardUpKey(unsigned char key, int x, int y){
 
 //For debugging, to be changed later
 void myMouse(int button, int state, int x, int y){
-   switch(button){
-      case GLUT_LEFT_BUTTON:
-	 if(state == GLUT_DOWN ){
-	 }else{
-	 }
-	 break;
-      case GLUT_RIGHT_BUTTON:
-	 if(state == GLUT_DOWN ){
-	 }else{
-	 }
-	 break;	 
+   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
+   {
+      printf ("mouseX %d mouseY %d\n",x,y);
    }
 }
 void drawRobot(){
