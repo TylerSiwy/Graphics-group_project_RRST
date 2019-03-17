@@ -73,6 +73,7 @@ void rotateAntena();
 void drawBody();
 void drawAndRotateHead();
 void drawBackTriangles();
+void drawRobot();
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -111,8 +112,7 @@ void Display(void){
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
-   drawAndRotateHead();
-   drawBody();
+   drawRobot();
    glutSwapBuffers();
 }
 
@@ -263,6 +263,10 @@ void myMouse(int button, int state, int x, int y){
 	 break;	 
    }
 }
+void drawRobot(){
+   drawAndRotateHead();
+   drawBody();
+}
 
 void drawHead(){  
    float backHeadScale = headScale * 0.55;
@@ -355,11 +359,10 @@ void drawBody(){
    // square on back of head for identification
    glTranslatef(headX, headY, headZ);
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
-   //translate triangles down by headScale, -1 for neck height * 2.25 for body height
+   //translate body down by headScale, -1 for neck height * 2.25 for body height
    drawCube(headScale*1.5, headScale*2, headScale*1.5, 0, -(headScale+1)*2.25, 0);  
    drawBackTriangles();
-   glPopMatrix();
-   
+   glPopMatrix();  
    glMatrixMode(GL_MODELVIEW);
 }
 
