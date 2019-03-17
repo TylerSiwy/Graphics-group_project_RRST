@@ -1,4 +1,4 @@
-#prama once
+#pragma once
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -6,22 +6,26 @@ using namespace std;
 class Building {
   public:
    virtual void draw()=0;
-  private:
+  protected:
+   GLUquadric *quad;
    int buildingScale;
    int clicks;//Number of clicks from the user
 };
 
 class StrongBuilding: public Building {
   public:
-   void draw();
-}
+   StrongBuilding();
+   void draw(float scale);
+};
 
 class WeakBuilding: public Building {
   public:
-   void draw();
-}
+   WeakBuilding();
+   void draw(float scale);
+};
 
 class UnbreakableBuilding: public Building {
   public:
-   void draw();
-}
+   UnbreakableBuilding();
+   void draw(float scale);
+};

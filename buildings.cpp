@@ -8,31 +8,35 @@
 #include "project_helpers.cpp"
 
 using namespace std;
-int allBuildingScale = 0.75;
 
 StrongBuilding::StrongBuilding(){
-   buildingScale = allBuildingScale;
    clicks=0;
+   quad = gluNewQuadric();
 }
 
-void StrongBuilding:: draw(){
-
+void StrongBuilding:: draw(float scale){
+   cout << "DRAWN STRONG";
+   drawRectBuilding(scale, scale*3, scale,
+		    0, 0, 0,
+		    0.6, 0.6, 0.6);
 }
 
 WeakBuilding::WeakBuilding(){
-   buildingScale = allBuildingScale;
    clicks = 0;
+   quad = gluNewQuadric();
 }
 
-void WeakBuilding::draw(){
-
+void WeakBuilding::draw(float scale){
+   cout << "DRAWN WEAK";
+   drawCylinderBuilding(scale, quad);
 }
 
 UnbreakableBuilding::UnbreakableBuilding(){
-   buildingScale = allBuildingScale;
    clicks = 0;
+   quad = gluNewQuadric();
 }
 
-void UnbreakableBuilding::draw(){
-
+void UnbreakableBuilding::draw(float scale){
+   cout << "DRAWN UNBREAKABLE";
+   drawPyramidBuilding(scale, 0.75, 0.75, 0.5);
 }
