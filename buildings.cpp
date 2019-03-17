@@ -15,7 +15,6 @@ StrongBuilding::StrongBuilding(){
 }
 
 void StrongBuilding:: draw(float scale){
-   cout << "DRAWN STRONG";
    drawRectBuilding(scale, scale*3, scale,
 		    0, 0, 0,
 		    0.6, 0.6, 0.6);
@@ -27,7 +26,6 @@ WeakBuilding::WeakBuilding(){
 }
 
 void WeakBuilding::draw(float scale){
-   cout << "DRAWN WEAK";
    drawCylinderBuilding(scale, quad);
 }
 
@@ -37,6 +35,5 @@ UnbreakableBuilding::UnbreakableBuilding(){
 }
 
 void UnbreakableBuilding::draw(float scale){
-   cout << "DRAWN UNBREAKABLE";
    drawPyramidBuilding(scale, 0.75, 0.75, 0.5);
 }
