@@ -18,20 +18,14 @@ int WindowID;
 
 // LookAt
 double eyex = 0.0;
-double eyey = 200.0;
-double eyez = 200.0;
+double eyey = 50.0;
+double eyez = 50.0;
 double atx = 0.0;
 double aty = 0.0;
 double atz = 0.0;
 double upx = 0.0;
 double upy = 1.0;
 double upz = 0.0;
-
-// Scaleing
-double timeScale = 1;
-double sizeScale = 0.08;
-double orbitScale = 0.001;
-double moonScale = 0.3;
 
 // Objects
 City myCity(20, 20);
@@ -48,7 +42,7 @@ void init(int &argc, char ** argv);
 
 
 int main(int argc, char ** argv) {
-   myCity.printLayout();
+   //myCity.printLayout();
    glutInit(&argc, argv);
    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
    glutInitWindowSize(WindowWidth, WindowHeight);
@@ -148,6 +142,6 @@ void Display() {
 	glLoadIdentity();
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyex, eyey, eyez, atx, aty, atz, upx, upy, upz);
-	myCity.drawCity(10);
+	myCity.drawCity(1);
 	glutSwapBuffers();
 }

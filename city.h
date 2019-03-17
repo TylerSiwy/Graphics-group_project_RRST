@@ -1,21 +1,22 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include "buildings.h"
 using namespace std;
 
 class City {
   public:
+   // Sizes are in city blocks
+   City(int xSize, int zSize);
+   void drawCity(double blockSize);
+   void printLayout();
+   bool isRoad(int x, int z);
+  private:
    class zone {
      public:
       zone(bool isRoad);
       bool road;
+      vector<Building> buildingsOnBlock;
    };
-   City(int length, int width);
-
-   void drawCity(double blockSize);
-   void printLayout();
-   // private:
    vector<vector<zone>> cityLayout;
-   int cityLength;
-   int cityWidth;
 };
