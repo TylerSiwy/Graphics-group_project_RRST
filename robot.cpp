@@ -26,7 +26,7 @@ float lookAtZ = 0;
 GLUquadric *eyeQuad = gluNewQuadric();
 
 //Robot Vars
-float hScale = 2.0;
+float hScale = 2.0; //Scale for the size of the head cube
 float antX = 0;
 float antY = 0;
 float antZ = 0;
@@ -40,6 +40,7 @@ float headZ = 0;
 float neckX = 0;
 float neckY = 0;
 float neckZ = 0;
+float headRotationAngle = 0;
 
 static bool paused=false;
 
@@ -57,6 +58,7 @@ void drawAntenna();
 void drawNeck();
 void rotateAntena();
 void drawBody();
+void drawAndRotateHead();
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -89,13 +91,13 @@ void Display(void){
 
    //testerino
    glLoadIdentity();
-   // glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   gluPerspective(45, 1.0, 80.0, 1.0);
+   glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   //gluPerspective(45, 1.0, 80.0, 1.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
-   drawHead();
+   drawAndRotateHead();
    drawBody();
    glutSwapBuffers();
 }
@@ -227,21 +229,24 @@ void myKeyboardUpKey(unsigned char key, int x, int y){
 	 break;
    }
 }
-void myMouse(int button, int state, int x, int y){
-   if(paused==false){
-      switch(button){
-	 case GLUT_LEFT_BUTTON:
-	    if(state == GLUT_DOWN ){
 
-	    }else{
-	    }
-	    break;
-	 case GLUT_RIGHT_BUTTON:
-	    if(state == GLUT_DOWN ){
-	    }else{
-	    }
-	    break;	 
-      }
+//For debugging, to be changed later
+void myMouse(int button, int state, int x, int y){
+   switch(button){
+      case GLUT_LEFT_BUTTON:
+	 if(state == GLUT_DOWN ){
+	    headRotationAngle = 90;
+	 }else{
+	    headRotationAngle = 0;
+	 }
+	 break;
+      case GLUT_RIGHT_BUTTON:
+	 if(state == GLUT_DOWN ){
+	    headRotationAngle = -90;
+	 }else{
+	    headRotationAngle = 0;
+	 }
+	 break;	 
    }
 }
 
@@ -266,6 +271,26 @@ void drawHead(){
    glMatrixMode(GL_MODELVIEW);
 }
 
+void drawAndRotateHead(){
+   glRotatef(headRotationAngle, 0, 1, 0);
+   drawHead();
+   glRotatef(-headRotationAngle, 0, 1, 0);
+}
+
+void drawNeck(){
+   float neckToHeadRatio = 0.70;
+   float neckRadius = hScale * neckToHeadRatio;
+   float neckDiameter = neckRadius *2;     
+   float neckHeight = 1;
+   glPushMatrix();
+   glColor3f(1.0, 0.27, 0);
+   // I am using thaumaturgy here to find the proper location
+   glTranslatef(headX, headY-neckHeight*2, -hScale+neckDiameter*neckToHeadRatio);
+   glRotatef(90, 1, 0, 0);
+   gluCylinder(neckQuad, neckRadius, neckRadius, neckHeight, 10, 10);
+   glPopMatrix();
+}
+
 void drawEyes(){
    float eyeRadius = 0.5;
    float resolution = 10;
@@ -286,7 +311,7 @@ void drawEyes(){
    glPopMatrix();
 }
 void rotateAntena(){
-   antAngle += 10;
+   antAngle += 5 - headRotationAngle;
    glTranslatef(antX, antY, antZ);
    glRotatef(antAngle, 0, 1, 0);
    glTranslatef(-antX, -antY, -antZ);
@@ -306,16 +331,6 @@ void drawAntenna(){
    drawCube(0.8, 0.3, 0.1, 0, 0, antHeight);
    glPopMatrix();
    
-}
-
-void drawNeck(){
-   float neckRadius = hScale * 0.80;
-   float neckHeight = 1;
-   glPushMatrix();
-   glTranslatef(headX, headY-neckHeight*2, -hScale+neckRadius);
-   glRotatef(90, 1, 0, 0);
-   gluCylinder(neckQuad, neckRadius, neckRadius, neckHeight, 10, 10);
-   glPopMatrix();
 }
 
 void drawBody(){  
