@@ -8,7 +8,6 @@
 #include <GL/glut.h> // GLUT support library.
 #include <iostream>
 #include "project_helpers.cpp"
-
 using namespace std;
 
 //System Vars
@@ -87,6 +86,7 @@ int main (int argc, char **argv){
 }
 
 void Display(void){
+
    //testerino
    glLoadIdentity();
    // glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
