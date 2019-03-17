@@ -14,7 +14,7 @@ StrongBuilding::StrongBuilding(){
 }
 
 void StrongBuilding:: draw(){
-
+   cout << "DRAWN STRONG";
 }
 
 WeakBuilding::WeakBuilding(){
@@ -22,7 +22,7 @@ WeakBuilding::WeakBuilding(){
 }
 
 void WeakBuilding::draw(){
-
+   cout << "DRAWN WEAK";
 }
 
 UnbreakableBuilding::UnbreakableBuilding(){
@@ -30,5 +30,5 @@ UnbreakableBuilding::UnbreakableBuilding(){
 }
 
 void UnbreakableBuilding::draw(){
-
+   cout << "DRAWN UNBREAKABLE";
 }
