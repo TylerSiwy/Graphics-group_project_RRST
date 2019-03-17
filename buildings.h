@@ -7,6 +7,7 @@ class Building {
   public:
    virtual void draw()=0;
   protected:
+   GLUquadric *quad;
    int buildingScale;
    int clicks;//Number of clicks from the user
 };
@@ -14,17 +15,17 @@ class Building {
 class StrongBuilding: public Building {
   public:
    StrongBuilding();
-   void draw();
+   void draw(float scale);
 };
 
 class WeakBuilding: public Building {
   public:
    WeakBuilding();
-   void draw();
+   void draw(float scale);
 };
 
 class UnbreakableBuilding: public Building {
   public:
    UnbreakableBuilding();
-   void draw();
+   void draw(float scale);
 };
