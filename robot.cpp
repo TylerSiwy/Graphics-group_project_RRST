@@ -51,6 +51,7 @@ void myMouse(int button, int state, int x, int y);
 void drawHead();
 void specialKeys( int key, int x, int y );
 void specialKeysUp( int key, int x, int y );
+void myKeyboardUpKey(unsigned char key, int x, int y);
 void rotateObjects();
 void drawEyes();
 void drawAntenna();
@@ -67,7 +68,7 @@ int main (int argc, char **argv){
 
    // Create and Open a window with its title.
    Window_ID = glutCreateWindow(PROGRAM_TITLE);
-   if(paused==false){
+   // if(paused==false){
    // Register and install the callback function to do the drawing.
    glutDisplayFunc(&Display);
    
@@ -76,16 +77,12 @@ int main (int argc, char **argv){
    // Input functions
    glutSpecialFunc(&specialKeys);
    glutSpecialUpFunc(&specialKeysUp);
-   // glutKeyboardFunc(&myKeyboardKey)
    glutMouseFunc(myMouse);
-   }
-   
    glutKeyboardFunc(&myKeyboardKey);
+   glutKeyboardFunc(&myKeyboardUpKey);
    glEnable(GL_DEPTH_TEST);
    MyInit();
-
-
-     glutMainLoop(); 
+   glutMainLoop(); 
    return 0;
 }
 
@@ -103,82 +100,7 @@ void Display(void){
    glutSwapBuffers();
 }
 
-///////////////////////////
-//The special keys currently only F1-F12
-//the only purpose of these is to change
-//the view of the camera around the robot
-//as well F1-F3 changes the angle of the robots head
-///////////////////////////
-void specialKeys( int key, int x, int y ){
-   switch(key){
-      case GLUT_KEY_F1://turn head to face forwards (the default)
-	 break;
-      case GLUT_KEY_F2://turn robot head to the right
-	 break;
-      case GLUT_KEY_F3://turn robot head to the left
-	 break;
-      case GLUT_KEY_F4://makes the view go back to the regular view
-	 eyeX = 0;
-	 eyeY = 0;
-	 eyeZ = angleViewDist;
-	 break;
-      case GLUT_KEY_F5://looks at robot from the BACK LEFT
-	 eyeX =  angleViewDist;
-	 eyeY = -angleViewDist;
-	 eyeZ =  angleViewDist;
-	 break;
-      case GLUT_KEY_F6://looks at robot from the BACK RIGHT
-	 eyeX = -angleViewDist;
-	 eyeY = -angleViewDist;
-	 eyeZ =  angleViewDist;
-	 break;
-      case GLUT_KEY_F7://looks at robot from the FRONT RIGHT
-	 eyeX = -angleViewDist;
-	 eyeY = -angleViewDist;
-	 eyeZ = -angleViewDist;
-	 break;
-      case GLUT_KEY_F8://looks at robot from the FRONT LEFT
-	 eyeX =  angleViewDist;
-	 eyeY = -angleViewDist;
-	 eyeZ = -angleViewDist;
-	 break;
-      case GLUT_KEY_F9://looks at robot from the BACK LEFT at GREATER dist
-	 eyeX =  angleViewDist*2;
-	 eyeY = -angleViewDist*2;
-	 eyeZ =  angleViewDist*2;
-	 break;
-      case GLUT_KEY_F10://looks at robot from the BACK RIGHT at GREATER dist
-	 eyeX = -angleViewDist*2;
-	 eyeY = -angleViewDist*2;
-	 eyeZ =  angleViewDist*2;
-	 break;
-      case GLUT_KEY_F11://looks at robot from the FRONT RIGHT at GREATER dist
-	 eyeX = -angleViewDist*2;
-	 eyeY = -angleViewDist*2;
-	 eyeZ = -angleViewDist*2;
-	 break;
-      case GLUT_KEY_F12://looks at robot from the FRONT LEFT at GREATER dist
-	 eyeX =  angleViewDist*2;
-	 eyeY = -angleViewDist*2;
-	 eyeZ = -angleViewDist*2;
-	 break;
 
-      default:
-	 printf ("KP: No action for %d.\n", key);
-	 break;
-   }
-}
-
-void specialKeysUp( int key, int x, int y ){
-   switch(key){
-      case GLUT_KEY_F2:
-	 case GLUT_KEY_F3:
-	 cout << "F2UP ";
-	 break;
-      default:
-	 break;
-   }
-}
 
 void MyInit(){
    // Color to clear color buffer to.
@@ -188,57 +110,138 @@ void MyInit(){
    glEnable(GL_DEPTH_TEST);
 }
 
-void myKeyboardKey(unsigned char key, int x, int y){
-   switch(key){
-      // if(paused==false){
-      cout << key;
-      case 'z': // z
-	 //This will now move the robot forward
-	 break;
-      case 'a':
-	 //turn robot right
-	 break;
-      case 'q':
-	 //turn robot left
-	 break;
-	 case 'r':
-	 //return the robot to the origin if the robot is on the boundary
-	 //do nothing if not on boundary
-	 break;
-	 //     }
-	 case 'p':
-	    //pauses the game, press again to unpause
-	    paused = !paused;
-	    
+///////////////////////////
+//The special keys currently only F1-F12
+//the only purpose of these is to change
+//the view of the camera around the robot
+//as well F1-F3 changes the angle of the robots head
+///////////////////////////
+void specialKeys( int key, int x, int y ){
+   if(paused==false){
+      switch(key){
+	 case GLUT_KEY_F1://turn head to face forwards (the default)
 	    break;
+	 case GLUT_KEY_F2://turn robot head to the right
+	    break;
+	 case GLUT_KEY_F3://turn robot head to the left
+	    break;
+	 case GLUT_KEY_F4://makes the view go back to the regular view
+	    eyeX = 0;
+	    eyeY = 0;
+	    eyeZ = angleViewDist;
+	    break;
+	 case GLUT_KEY_F5://looks at robot from the BACK LEFT
+	    eyeX =  angleViewDist;
+	    eyeY = -angleViewDist;
+	    eyeZ =  angleViewDist;
+	    break;
+	 case GLUT_KEY_F6://looks at robot from the BACK RIGHT
+	    eyeX = -angleViewDist;
+	    eyeY = -angleViewDist;
+	    eyeZ =  angleViewDist;
+	    break;
+	 case GLUT_KEY_F7://looks at robot from the FRONT RIGHT
+	    eyeX = -angleViewDist;
+	    eyeY = -angleViewDist;
+	    eyeZ = -angleViewDist;
+	    break;
+	 case GLUT_KEY_F8://looks at robot from the FRONT LEFT
+	    eyeX =  angleViewDist;
+	    eyeY = -angleViewDist;
+	    eyeZ = -angleViewDist;
+	    break;
+	 case GLUT_KEY_F9://looks at robot from the BACK LEFT at GREATER dist
+	    eyeX =  angleViewDist*2;
+	    eyeY = -angleViewDist*2;
+	    eyeZ =  angleViewDist*2;
+	    break;
+	 case GLUT_KEY_F10://looks at robot from the BACK RIGHT at GREATER dist
+	    eyeX = -angleViewDist*2;
+	    eyeY = -angleViewDist*2;
+	    eyeZ =  angleViewDist*2;
+	    break;
+	 case GLUT_KEY_F11://looks at robot from the FRONT RIGHT at GREATER dist
+	    eyeX = -angleViewDist*2;
+	    eyeY = -angleViewDist*2;
+	    eyeZ = -angleViewDist*2;
+	    break;
+	 case GLUT_KEY_F12://looks at robot from the FRONT LEFT at GREATER dist
+	    eyeX =  angleViewDist*2;
+	    eyeY = -angleViewDist*2;
+	    eyeZ = -angleViewDist*2;
+	    break;
+
+	 default:
+	    printf ("KP: No action for %d.\n", key);
+	    break;
+      }
+   }
+}
+
+void specialKeysUp( int key, int x, int y ){
+   if(paused==false){
+      switch(key){
+	 case GLUT_KEY_F2:
+	 case GLUT_KEY_F3:
+	    cout << "F2UP ";
+	    break;
+	 default:
+	    break;
+      }
+   }
+}
+
+void myKeyboardKey(unsigned char key, int x, int y){
+   if(paused==false){ 
+      switch(key){
+	 // if(paused==false){
+	 cout << key;
+	 case 'z': // z
+	    //This will now move the robot forward
+	    break;
+	 case 'a':
+	    //turn robot right
+	    break;
+	 case 'q':
+	    //turn robot left
+	    break;
+	 case 'r':
+	    //return the robot to the origin if the robot is on the boundary
+	    //do nothing if not on boundary
+	    break;
+
+	 default:
+	    printf ("KP: No action for %d.\n", key);
+	    break;
+      }
+   }
+}
+void myKeyboardUpKey(unsigned char key, int x, int y){
+   switch(key){
+      case 'p'://pauses the game, press again to unpause
+	 paused = !paused;
+	 cout << paused;
+	 break;
       default:
 	 printf ("KP: No action for %d.\n", key);
 	 break;
    }
 }
-
 void myMouse(int button, int state, int x, int y){
-   switch(button){
-      case GLUT_LEFT_BUTTON:
-	 if(state == GLUT_DOWN ){
-	    
-	        eyeX = 0.0;
-	        eyeY = 0.0;
-	        eyeZ = 15.0;
-		//	cout<< paused;
-	 }else{
-	        eyeX = eyeY = 0;
-	        eyeZ = -15;
-	 }
-	 break;
-      case GLUT_RIGHT_BUTTON:
-	 if(state == GLUT_DOWN ){
-	    eyeX = eyeY = eyeZ = -5.0;
-	 }else{
-	    eyeX = eyeY =0;
-	    eyeZ = 5;
-	 }
-	 break;	 
+   if(paused==false){
+      switch(button){
+	 case GLUT_LEFT_BUTTON:
+	    if(state == GLUT_DOWN ){
+
+	    }else{
+	    }
+	    break;
+	 case GLUT_RIGHT_BUTTON:
+	    if(state == GLUT_DOWN ){
+	    }else{
+	    }
+	    break;	 
+      }
    }
 }
 
