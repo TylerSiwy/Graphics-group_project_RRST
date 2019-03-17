@@ -10,13 +10,13 @@ class City {
    City(int xSize, int zSize);
    void drawCity(double blockSize);
    void printLayout();
-   bool isRoad(int x, int z);
+   bool isRoad(unsigned int x, unsigned int z);
   private:
    class zone {
      public:
       zone(bool isRoad);
       bool road;
-      vector<Building> buildingsOnBlock;
+      vector<Building*> buildingsOnBlock;
    };
    vector<vector<zone>> cityLayout;
 };
