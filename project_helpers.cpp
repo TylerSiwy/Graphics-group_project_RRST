@@ -81,37 +81,37 @@ void drawRectBuilding(float xScale, float yScale, float zScale,
    // Puke Green - FRONT
    glBegin(GL_POLYGON);
    glColor3f(buildingR, buildingG, buildingB);
-   glVertex3f(xScale, -yScale, -zScale); 
+   glVertex3f(xScale, 0, -zScale); 
    glVertex3f(xScale, yScale, -zScale); 
    glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(-xScale, -yScale, -zScale); 
+   glVertex3f(-xScale, 0, -zScale); 
    glEnd();
  
    // Brown Face - BACK
    glBegin(GL_POLYGON);
    glColor3f(buildingR, buildingG, buildingB);  
-   glVertex3f(-xScale, -yScale, zScale);
+   glVertex3f(-xScale, 0, zScale);
    glVertex3f(-xScale, yScale, zScale);
    glVertex3f(xScale, yScale, zScale);
-   glVertex3f(xScale, -yScale, zScale);
+   glVertex3f(xScale, 0, zScale);
    glEnd();
  
    // Purple side - RIGHT
    glBegin(GL_POLYGON);
    glColor3f(buildingR*0.90, buildingG*0.90, buildingB*0.90);
-   glVertex3f( xScale, -yScale, zScale);
+   glVertex3f( xScale, 0, zScale);
    glVertex3f( xScale, yScale, zScale);
    glVertex3f( xScale, yScale, -zScale);
-   glVertex3f( xScale, -yScale, -zScale);
+   glVertex3f( xScale, 0, -zScale);
    glEnd();
  
    // Green side - LEFT
    glBegin(GL_POLYGON);
    glColor3f(buildingR*0.5, buildingG*0.5, buildingB*0.5);
-   glVertex3f(-xScale, -yScale, -zScale);
+   glVertex3f(-xScale, 0, -zScale);
    glVertex3f(-xScale, yScale, -zScale);
    glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(-xScale, -yScale, zScale);
+   glVertex3f(-xScale, 0, zScale);
    glEnd();
  
    // Blue side - TOP
@@ -126,10 +126,10 @@ void drawRectBuilding(float xScale, float yScale, float zScale,
    // Red side - BOTTOM
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.0, 0.0);
-   glVertex3f(-xScale, -yScale, -zScale);
-   glVertex3f(-xScale, -yScale, zScale);
-   glVertex3f(xScale, -yScale, zScale);
-   glVertex3f(xScale, -yScale, -zScale);
+   glVertex3f(-xScale, 0, -zScale);
+   glVertex3f(-xScale, 0, zScale);
+   glVertex3f(xScale, 0, zScale);
+   glVertex3f(xScale, 0, -zScale);
    glEnd();
 
    glPopMatrix();
@@ -186,7 +186,7 @@ void drawPyramidBuilding(float scale,
 void drawCylinderBuilding(float scale, GLUquadric *quad){
    float height = scale*4;
    glPushMatrix();
-   glRotatef(90, 1, 0, 0);
+   glRotatef(-90, 1, 0, 0);
    glColor3f(0.44, 0.26, 0.03);
    gluCylinder(quad, scale, scale, height, 20, 20);
    glPopMatrix();

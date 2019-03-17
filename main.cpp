@@ -18,8 +18,8 @@ int WindowID;
 
 // LookAt
 double eyex = 0.0;
-double eyey = 200.0;
-double eyez = 200.0;
+double eyey = 0.0;
+double eyez = 100.0;
 double atx = 0.0;
 double aty = 0.0;
 double atz = 0.0;
