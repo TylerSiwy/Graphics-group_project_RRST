@@ -66,7 +66,6 @@ void myMouse(int button, int state, int x, int y);
 void specialKeys( int key, int x, int y );
 void specialKeysUp( int key, int x, int y );
 void myKeyboardUpKey(unsigned char key, int x, int y);
-void rotateObjects();
 
 void drawRobot();
 void drawAndRotateHead();
@@ -270,8 +269,16 @@ void drawRobot(){
    drawBody();
 }
 
+void drawAndRotateHead(){
+   glMatrixMode(GL_MODELVIEW);
+   glPushMatrix();
+   glRotatef(headRotationAngle, 0, 1, 0);
+   drawHead();
+   glPopMatrix();
+}
 void drawHead(){  
    float backHeadScale = headScale * 0.55;
+   glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    glTranslatef(headX, headY, headZ);
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
@@ -288,13 +295,6 @@ void drawHead(){
    glVertex3f(-backHeadScale, -backHeadScale, -headScale-0.1);
    glEnd();
    glPopMatrix();
-   glMatrixMode(GL_MODELVIEW);
-}
-
-void drawAndRotateHead(){
-   glRotatef(headRotationAngle, 0, 1, 0);
-   drawHead();
-   glRotatef(-headRotationAngle, 0, 1, 0);
 }
 
 void drawNeck(){
@@ -302,6 +302,7 @@ void drawNeck(){
    float neckRadius = headScale * neckToHeadRatio;
    float neckDiameter = neckRadius *2;     
    float neckHeight = 1;
+   glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    glColor3f(1.0, 0.27, 0);
    // I am using thaumaturgy here to find the proper location
@@ -312,10 +313,11 @@ void drawNeck(){
 }
 
 void drawEyes(){
+   glMatrixMode(GL_MODELVIEW);
    float eyeRadius = 0.5;
    float resolution = 10;
    float headCenterOffset = headScale + 0.01;
-   //Right EyebackHeadScale
+   //Right Eye
    glPushMatrix();   
    glTranslatef(headScale/2, headScale/3, headCenterOffset);
    glRotatef(180, 0, 1, 0);
@@ -336,6 +338,7 @@ void drawAntenna(){
    float antRadius = 0.15;
    float antHeight = 1.35;
    float antRotation = 270;
+   glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    rotateAntena();
    glTranslatef(antX, antY, antZ);
@@ -343,13 +346,12 @@ void drawAntenna(){
    glColor3f(0.6,0.1,0.3); //Purple
    gluCylinder(antQuad, antRadius, 0.05, antHeight, 10, 10); //Cone Shaped
    drawCube(0.8, 0.3, 0.1, 0, 0, antHeight);
-   glPopMatrix();
-   
+   glPopMatrix();  
 }
 
 void rotateAntena(){
    //THIS MAY NEED TO BE PER ROBOT MOVEMENT/STEP INSTEAD OF CONSTANT PLEASE CHANGE IT RYAN!!!
-   antAngle += 30 - headRotationAngle;
+   antAngle += 5 - headRotationAngle;
    glTranslatef(antX, antY, antZ);
    glRotatef(antAngle, 0, 1, 0);
    glTranslatef(-antX, -antY, -antZ);
@@ -357,7 +359,6 @@ void rotateAntena(){
 
 void drawBody(){  
    glPushMatrix();
-   drawEyes();
    drawAntenna();
    // square on back of head for identification
    glTranslatef(headX, headY, headZ);
