@@ -6,7 +6,7 @@ LIBRARIES =  -lX11 -lXi -lXmu -lglut -lGL -lGLU -lm
 
 all: main clean
 
-main: city.o main.o
+main: city.o main.o buildings.o
 	$(CPP) $(CPPFLAGS) -o $@ $^ $(LIBDIR) $(LIBRARIES)
 
 %.o : %.cpp
