@@ -27,7 +27,7 @@ float lookAtZ = 0;
 GLUquadric *eyeQuad = gluNewQuadric();
 
 //Robot Vars
-float hScale = 2.0;
+float hScale = 2.0; //Scale for the size of the head cube
 float antX = 0;
 float antY = 0;
 float antZ = 0;
@@ -92,8 +92,8 @@ int main (int argc, char **argv){
 void Display(void){
    //testerino
    glLoadIdentity();
-   // glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   gluPerspective(45, 1.0, 80.0, 1.0);
+   glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   //gluPerspective(45, 1.0, 80.0, 1.0);
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -233,7 +233,9 @@ void myMouse(int button, int state, int x, int y){
 	 break;
       case GLUT_RIGHT_BUTTON:
 	 if(state == GLUT_DOWN ){
-	    eyeX = eyeY = eyeZ = -5.0;
+	    eyeX = 15.0;
+	    eyeY = 0.0;
+	    eyeZ = 0.0;
 	 }else{
 	    eyeX = eyeY =0;
 	    eyeZ = 5;
@@ -306,10 +308,14 @@ void drawAntenna(){
 }
 
 void drawNeck(){
-   float neckRadius = hScale * 0.80;
+   float neckToHeadRatio = 0.70;
+   float neckRadius = hScale * neckToHeadRatio;
+   float neckDiameter = neckRadius *2;     
    float neckHeight = 1;
    glPushMatrix();
-   glTranslatef(headX, headY-neckHeight*2, -hScale+neckRadius);
+   glColor3f(1.0, 0.27, 0);
+   // I am using thaumaturgy here to find the proper location
+   glTranslatef(headX, headY-neckHeight*2, -hScale+neckDiameter*neckToHeadRatio);
    glRotatef(90, 1, 0, 0);
    gluCylinder(neckQuad, neckRadius, neckRadius, neckHeight, 10, 10);
    glPopMatrix();
