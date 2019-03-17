@@ -9,13 +9,15 @@
 #include <iostream>
 #include "project_helpers.cpp"
 using namespace std;
-
-//System Vars
+//-------------------------System Vars-------------------------
 int Window_ID;
 int Window_Width = 900;
 int Window_Height = 900;
 #define PROGRAM_TITLE "ROBOT RAMPAGE"
 float angleViewDist=15;
+//Determines if game is paused or not
+static bool paused=false;
+
 //Lookat Vars
 float eyeX = 0;
 float eyeY = 0;
@@ -24,25 +26,36 @@ float lookAtX = 0;
 float lookAtY = 0;
 float lookAtZ = 0;
 GLUquadric *eyeQuad = gluNewQuadric();
+//--------------------------------------------------------------
 
-//Robot Vars
-float hScale = 2.0; //Scale for the size of the head cube
-float antX = 0;
-float antY = 0;
-float antZ = 0;
-float antAngle = 0;
-GLUquadric *antQuad = gluNewQuadric();
-float rotate_cube = 0;
-GLUquadric *neckQuad = gluNewQuadric();
+//--------------------------Robot Vars--------------------------
+//Scale for the size of the head cube
+float headScale = 2.0;
+//Head Centerpoint XYZ
 float headX = 0;
 float headY = 0;
 float headZ = 0;
+//Angle of head for rotation on button presses
+float headRotationAngle = 0;
+//Angle of head for rotation during initial setup
+float rotate_cube = 0;
+
+//Location of robot's Antenna
+float antX = 0;
+float antY = 0;
+float antZ = 0;
+//Angle of antenna used for it's constnat rotation
+float antAngle = 0;
+//Quadratic for creating the cone part of the antenna
+GLUquadric *antQuad = gluNewQuadric();
+
+//Neck coordinates
 float neckX = 0;
 float neckY = 0;
 float neckZ = 0;
-float headRotationAngle = 0;
-
-static bool paused=false;
+//Quadratic for creating the neck of the robot
+GLUquadric *neckQuad = gluNewQuadric();
+//--------------------------------------------------------------
 
 void Display(void);
 void MyInit();
@@ -59,6 +72,8 @@ void drawNeck();
 void rotateAntena();
 void drawBody();
 void drawAndRotateHead();
+void drawBackTriangles();
+void drawRobot();
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -97,8 +112,7 @@ void Display(void){
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
-   drawAndRotateHead();
-   drawBody();
+   drawRobot();
    glutSwapBuffers();
 }
 
@@ -249,23 +263,27 @@ void myMouse(int button, int state, int x, int y){
 	 break;	 
    }
 }
+void drawRobot(){
+   drawAndRotateHead();
+   drawBody();
+}
 
 void drawHead(){  
-   float backHeadScale = hScale * 0.55;
+   float backHeadScale = headScale * 0.55;
    glPushMatrix();
    glTranslatef(headX, headY, headZ);
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
-   drawCube(hScale, hScale, hScale, 0, 0, 0);
+   drawCube(headScale, headScale, headScale, 0, 0, 0);
    drawNeck();
    drawEyes();
    drawAntenna();
    // square on back of head for identification
    glBegin(GL_POLYGON);
    glColor3f(0.5, 0.5, 1.0);
-   glVertex3f(backHeadScale, -backHeadScale, -hScale-0.1);
-   glVertex3f(backHeadScale, backHeadScale, -hScale-0.1);
-   glVertex3f(-backHeadScale, backHeadScale,-hScale-0.1);
-   glVertex3f(-backHeadScale, -backHeadScale, -hScale-0.1);
+   glVertex3f(backHeadScale, -backHeadScale, -headScale-0.1);
+   glVertex3f(backHeadScale, backHeadScale, -headScale-0.1);
+   glVertex3f(-backHeadScale, backHeadScale,-headScale-0.1);
+   glVertex3f(-backHeadScale, -backHeadScale, -headScale-0.1);
    glEnd();
    glPopMatrix();
    glMatrixMode(GL_MODELVIEW);
@@ -279,13 +297,13 @@ void drawAndRotateHead(){
 
 void drawNeck(){
    float neckToHeadRatio = 0.70;
-   float neckRadius = hScale * neckToHeadRatio;
+   float neckRadius = headScale * neckToHeadRatio;
    float neckDiameter = neckRadius *2;     
    float neckHeight = 1;
    glPushMatrix();
    glColor3f(1.0, 0.27, 0);
    // I am using thaumaturgy here to find the proper location
-   glTranslatef(headX, headY-neckHeight*2, -hScale+neckDiameter*neckToHeadRatio);
+   glTranslatef(headX, headY-neckHeight*2, -headScale+neckDiameter*neckToHeadRatio);
    glRotatef(90, 1, 0, 0);
    gluCylinder(neckQuad, neckRadius, neckRadius, neckHeight, 10, 10);
    glPopMatrix();
@@ -294,31 +312,25 @@ void drawNeck(){
 void drawEyes(){
    float eyeRadius = 0.5;
    float resolution = 10;
-   float headCenterOffset = hScale + 0.01;
+   float headCenterOffset = headScale + 0.01;
    //Right EyebackHeadScale
    glPushMatrix();   
-   glTranslatef(hScale/2, hScale/3, headCenterOffset);
+   glTranslatef(headScale/2, headScale/3, headCenterOffset);
    glRotatef(180, 0, 1, 0);
    glColor3f(1.0,1.0, 1.0);
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
    //Left Eye
    glPushMatrix();
-   glTranslatef(-hScale/2, hScale/3, headCenterOffset);
+   glTranslatef(-headScale/2, headScale/3, headCenterOffset);
    glRotatef(180, 0, 1, 0);
    glColor3f(1.0, 1.0, 1.0);
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
 }
-void rotateAntena(){
-   antAngle += 5 - headRotationAngle;
-   glTranslatef(antX, antY, antZ);
-   glRotatef(antAngle, 0, 1, 0);
-   glTranslatef(-antX, -antY, -antZ);
-}
 
 void drawAntenna(){
-   antY=hScale;
+   antY=headScale;
    float antRadius = 0.15;
    float antHeight = 1.35;
    float antRotation = 270;
@@ -333,31 +345,40 @@ void drawAntenna(){
    
 }
 
+void rotateAntena(){
+   antAngle += 5 - headRotationAngle;
+   glTranslatef(antX, antY, antZ);
+   glRotatef(antAngle, 0, 1, 0);
+   glTranslatef(-antX, -antY, -antZ);
+}
+
 void drawBody(){  
-   float backPolyScale = hScale * 1.5 * 0.55;
    glPushMatrix();
    drawEyes();
    drawAntenna();
    // square on back of head for identification
    glTranslatef(headX, headY, headZ);
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
-   //translate down by headScale, -1 for neck height * 2.25 for body height
-   drawCube(hScale*1.5, hScale*2, hScale*1.5, 0, -(hScale+1)*2.25, 0);  
-   // triangles on back of head for identification
-   glBegin(GL_POLYGON);
-   glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, -backPolyScale*4, -hScale*1.6);
-   glVertex3f(0, -backPolyScale*2, -hScale*1.6); //Point
-   glVertex3f(-backPolyScale, -backPolyScale*4, -hScale*1.6);
-   glEnd();
-   glBegin(GL_POLYGON);
-   glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, -backPolyScale*6, -hScale*1.6);
-   glVertex3f(0, -backPolyScale*4, -hScale*1.6); //Point
-   glVertex3f(-backPolyScale, -backPolyScale*6, -hScale*1.6);
-   glEnd();
-   glPopMatrix();
-   
+   //translate body down by headScale, -1 for neck height * 2.25 for body height
+   drawCube(headScale*1.5, headScale*2, headScale*1.5, 0, -(headScale+1)*2.25, 0);  
+   drawBackTriangles();
+   glPopMatrix();  
    glMatrixMode(GL_MODELVIEW);
 }
 
+void drawBackTriangles(){
+   // triangles on back of body for identification
+   float backPolyScale = headScale * 1.5 * 0.55;
+   glBegin(GL_POLYGON);
+   glColor3f(1.0, 0.1, 0.1);
+   glVertex3f(backPolyScale, -backPolyScale*4, -headScale*1.6);
+   glVertex3f(0, -backPolyScale*2, -headScale*1.6); //Point
+   glVertex3f(-backPolyScale, -backPolyScale*4, -headScale*1.6);
+   glEnd();
+   glBegin(GL_POLYGON);
+   glColor3f(1.0, 0.1, 0.1);
+   glVertex3f(backPolyScale, -backPolyScale*6, -headScale*1.6);
+   glVertex3f(0, -backPolyScale*4, -headScale*1.6); //Point
+   glVertex3f(-backPolyScale, -backPolyScale*6, -headScale*1.6);
+   glEnd();
+}
