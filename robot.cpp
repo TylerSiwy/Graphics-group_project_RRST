@@ -1,4 +1,6 @@
-//This is the level design
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>    
 #include <string.h>
@@ -61,19 +63,20 @@ void Display(void);
 void MyInit();
 void myKeyboardKey(unsigned char key, int x, int y);
 void myMouse(int button, int state, int x, int y);
-void drawHead();
 void specialKeys( int key, int x, int y );
 void specialKeysUp( int key, int x, int y );
 void myKeyboardUpKey(unsigned char key, int x, int y);
 void rotateObjects();
+
+void drawRobot();
+void drawAndRotateHead();
+void drawHead();
 void drawEyes();
 void drawAntenna();
 void drawNeck();
 void rotateAntena();
 void drawBody();
-void drawAndRotateHead();
 void drawBackTriangles();
-void drawRobot();
 
 int main (int argc, char **argv){
    glutInit(&argc, argv);
@@ -136,10 +139,13 @@ void specialKeys( int key, int x, int y ){
    if(paused==false){
       switch(key){
 	 case GLUT_KEY_F1://turn head to face forwards (the default)
+	    headRotationAngle = 0;
 	    break;
 	 case GLUT_KEY_F2://turn robot head to the right
+	    headRotationAngle = 90;
 	    break;
 	 case GLUT_KEY_F3://turn robot head to the left
+	    headRotationAngle = -90;
 	    break;
 	 case GLUT_KEY_F4://makes the view go back to the regular view
 	    eyeX = 0;
@@ -199,7 +205,7 @@ void specialKeysUp( int key, int x, int y ){
       switch(key){
 	 case GLUT_KEY_F2:
 	 case GLUT_KEY_F3:
-	    cout << "F2UP ";
+	    headRotationAngle = 0;
 	    break;
 	 default:
 	    break;
@@ -249,16 +255,12 @@ void myMouse(int button, int state, int x, int y){
    switch(button){
       case GLUT_LEFT_BUTTON:
 	 if(state == GLUT_DOWN ){
-	    headRotationAngle = 90;
 	 }else{
-	    headRotationAngle = 0;
 	 }
 	 break;
       case GLUT_RIGHT_BUTTON:
 	 if(state == GLUT_DOWN ){
-	    headRotationAngle = -90;
 	 }else{
-	    headRotationAngle = 0;
 	 }
 	 break;	 
    }
@@ -346,7 +348,8 @@ void drawAntenna(){
 }
 
 void rotateAntena(){
-   antAngle += 5 - headRotationAngle;
+   //THIS MAY NEED TO BE PER ROBOT MOVEMENT/STEP INSTEAD OF CONSTANT PLEASE CHANGE IT RYAN!!!
+   antAngle += 30 - headRotationAngle;
    glTranslatef(antX, antY, antZ);
    glRotatef(antAngle, 0, 1, 0);
    glTranslatef(-antX, -antY, -antZ);
