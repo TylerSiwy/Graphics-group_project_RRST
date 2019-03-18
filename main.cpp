@@ -21,7 +21,7 @@ int WindowID;
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ For special keys ~~~~~~~~~~~~
-float angleViewDist=15;
+float angleViewDist=30;
 //Determines if game is paused or not
 static bool paused=false;
 
@@ -44,11 +44,11 @@ double atY = 0.0;
 double atZ = 0.0;
 double upX = 0.0;
 double upY = 1.0;
-double upZ = -10.0;
+double upZ = 0.0;
 
 // Objects
 City myCity(20, 20);
-Robot t1000;
+Robot t1000;                                    // ROBOT FUCKER
 
 // Callback Functions
 void Display();
@@ -114,49 +114,60 @@ void Special(int key, int x, int y) {
       switch(key){
 	 case GLUT_KEY_F1://turn head to face forwards (the default)
 	    //headRotationAngle = 0;
-	    //robot.setHeadRotationAngle(0);
+	    t1000.smoothRotate(0); 
 	    break;
 	 case GLUT_KEY_F2://turn robot head to the right
-	    //headRotationAngle = 90;
-	    //robot.setHeadRotationAngle(90);
+	    t1000.setHeadRotationAngle(90);
+	    //t1000.smoothRotate(90);
 	    break;
 	 case GLUT_KEY_F3://turn robot head to the left
 	    //headRotationAngle = -90;
-	    //robot.setHeadRotationAngle(-90);
+	    t1000.smoothRotate(-90);
 	    break;
 	 case GLUT_KEY_F4://makes the view go back to the regular view
-	    eyeX = eyeY = 0;
+	    eyeX = 0;
+	    eyeY = 0;
 	    eyeZ = angleViewDist;
 	    break;
 	 case GLUT_KEY_F5://looks at robot from the BACK LEFT
-	    eyeX = eyeZ = angleViewDist;
-	    eyeY = -angleViewDist;
+	    eyeX = angleViewDist;
+	    eyeY = angleViewDist;
+	    eyeZ = angleViewDist;
 	    break;
 	 case GLUT_KEY_F6://looks at robot from the BACK RIGHT
-	    eyeX = eyeY = -angleViewDist;
+	    eyeX = -angleViewDist;
+	    eyeY =  angleViewDist;
 	    eyeZ =  angleViewDist;
 	    break;
 	 case GLUT_KEY_F7://looks at robot from the FRONT RIGHT
-	    eyeX = eyeY = eyeZ = -angleViewDist;
+	    eyeX = -angleViewDist;
+	    eyeY =  angleViewDist;
+	    eyeZ = -angleViewDist;
 	    break;
 	 case GLUT_KEY_F8://looks at robot from the FRONT LEFT
 	    eyeX =  angleViewDist;
-	    eyeY = eyeZ = -angleViewDist;
+	    eyeY =  angleViewDist;
+	    eyeZ = -angleViewDist;
 	    break;
 	 case GLUT_KEY_F9://looks at robot from the BACK LEFT at GREATER dist
-	    eyeX = eyeZ = angleViewDist*2;
-	    eyeY = -angleViewDist*2;
+	    eyeX = angleViewDist*2;
+	    eyeY = angleViewDist*2;
+	    eyeZ = angleViewDist*2;
 	    break;
 	 case GLUT_KEY_F10://looks at robot from the BACK RIGHT at GREATER dist
-	    eyeX = eyeY = -angleViewDist*2;
+	    eyeX = -angleViewDist*2;
+	    eyeY =  angleViewDist*2;
 	    eyeZ =  angleViewDist*2;
 	    break;
 	 case GLUT_KEY_F11://looks at robot from the FRONT RIGHT at GREATER dist
-	    eyeX = eyeY = eyeZ = -angleViewDist*2;
+	    eyeX = -angleViewDist*2;
+	    eyeY =  angleViewDist*2;
+	    eyeZ = -angleViewDist*2;
 	    break;
 	 case GLUT_KEY_F12://looks at robot from the FRONT LEFT at GREATER dist
 	    eyeX =  angleViewDist*2;
-	    eyeY = eyeZ = -angleViewDist*2;
+	    eyeY =  angleViewDist*2;
+	    eyeZ = -angleViewDist*2;
 	    break;
 
 	 default:

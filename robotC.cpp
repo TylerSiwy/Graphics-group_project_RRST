@@ -12,6 +12,9 @@ Robot::Robot(){
    quad = gluNewQuadric();
    eyeQuad = gluNewQuadric();
    rotate_cube = 0;
+
+   //For smooth rotation
+   currentAngle = 0;
 }
 
 void Robot::draw(float scale){
@@ -20,12 +23,27 @@ void Robot::draw(float scale){
    drawBody();
 }
 
-//smoothRotate
+// Smoothly rotates the robot's head to left or right. Where angle
+// is the max angle to rotate to.
+void Robot::smoothRotate(float angle){
+   if(angle > 0){
+      currentAngle += 10;
+      if(currentAngle > angle)
+	 currentAngle = angle;
+      //rotateRight = true;
+   }
+   if(angle < 0){
+      currentAngle -= 10;
+      if(currentAngle < angle)
+	 currentAngle = angle;
+      //rotateLeft = true;
+   }
+}
 
 void Robot::drawAndRotateHead(){
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
-   //glRotatef(smoothRotate, 0, 1, 0);
+   //glRotatef(smoothRotate(headRotationAngle), 0, 1, 0);
    drawHead();
    glPopMatrix();
 }
@@ -105,7 +123,7 @@ void Robot::rotateAntenna(){
 }
 
 void Robot::drawNeck(){
-      float neckToHeadRatio = 0.70;
+   float neckToHeadRatio = 0.70;
    float neckRadius = headScale * neckToHeadRatio;
    float neckDiameter = neckRadius *2;     
    float neckHeight = 1;
@@ -149,15 +167,15 @@ void Robot::drawBackTriangles(){
 }
 
 void Robot::drawCube(float xScale, float yScale, float zScale,
-	      float xTrans, float yTrans, float zTrans){  
+		     float xTrans, float yTrans, float zTrans){  
    glPushMatrix();
    glTranslatef(xTrans ,yTrans, zTrans);
    /*Cutting these in half since each vertex is the scale distance from the
      centerpoint and we want it to be to the scale provided, not twice as large.
      We could probably find a better solution later. */
    /*xScale = xScale / 2;
-   yScale = yScale / 2;
-   zScale = zScale / 2;*/
+     yScale = yScale / 2;
+     zScale = zScale / 2;*/
    // Puke Green - FRONT
    glBegin(GL_POLYGON);
    glColor3f(0.1, 0.5, 0.5);
