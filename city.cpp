@@ -9,10 +9,15 @@
 using namespace std;
 
 City::zone::zone(bool isRoad) {
+   static bool seeded = false;
+   if(!seeded) {
+      srand(time(NULL));
+      seeded = true;
+   }
    road = isRoad;
    if(!isRoad) {
       for(int i = 0; i < 4; i++) {
-	 switch(rand() % 4) {
+	 switch(rand() % 3) {
 	    case 0:
 	       buildingsOnBlock.push_back(new UnbreakableBuilding);
 	       break;
@@ -85,17 +90,21 @@ void City::drawCity(double blockSize) {
 	    for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
 	       glPushMatrix();
 	       switch(k) {
-		  case 0:
-		     glTranslatef(-blockSize/4, 0, -blockSize/4);
+		 case 0:
+		    glTranslatef(-blockSize/4, 0, -blockSize/4);
+		    break;
 		  case 1:
 		     glTranslatef(blockSize/4, 0, -blockSize/4);
+		     break;
 		  case 2:
 		     glTranslatef(blockSize/4, 0, blockSize/4);
+		     break;
 		  case 3:
 		     glTranslatef(-blockSize/4, 0, blockSize/4);
-	       }
+		     break;
+		     }
 	       if(cityLayout[i][j].buildingsOnBlock[k])
-		  cityLayout[i][j].buildingsOnBlock[k] -> draw(0.2 * blockSize);
+		  cityLayout[i][j].buildingsOnBlock[k] -> draw(0.40 * blockSize);
 	       glPopMatrix();
 	    }
 	    

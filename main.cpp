@@ -6,6 +6,8 @@
 #include <GL/glut.h>
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include "city.h"
 using namespace std;
 
@@ -18,14 +20,14 @@ int WindowID;
 
 // LookAt
 double eyex = 0.0;
-double eyey = 0.0;
-double eyez = 100.0;
+double eyey = 50.0;
+double eyez = 50.0;
 double atx = 0.0;
 double aty = 0.0;
 double atz = 0.0;
 double upx = 0.0;
 double upy = 1.0;
-double upz = 0.0;
+double upz = -10.0;
 
 // Objects
 City myCity(20, 20);
