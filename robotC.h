@@ -6,6 +6,7 @@
 #include <GL/glu.h>  // GLU support library.
 #include <GL/glut.h> // GLUT support library.
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 class Robot {
@@ -15,12 +16,19 @@ class Robot {
    void draw(float scale); //Draws all compenents of the robot
   protected:
    //All other components should be dynamically sized from headScale
-   float headScale; 
+   float headScale;
+    //Used to translate the robot to the correct position on creation
+   float robotOffset;
    float headX, headY, headZ;
    float headRotationAngle;
    float antX, antY, antZ;
    float antAngle;
    float neckX, neckY, neckZ;
+   float neckToHeadRatio;
+   float headToBodyScalar;
+   float bodyHeight;
+   float neckHeight;
+   float headHeight;
    //Angle of head for rotation during initial setup
    float rotate_cube;
    GLUquadric *antQuad;
