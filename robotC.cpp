@@ -1,6 +1,7 @@
 #include "robotC.h"
 
 Robot::Robot(){
+   //initializing variables
    headScale = 2.0;
    headX = headY = headZ = 0;
    headRotationAngle = 0;
@@ -11,18 +12,28 @@ Robot::Robot(){
    neckQuad = gluNewQuadric();
    quad = gluNewQuadric();
    eyeQuad = gluNewQuadric();
+   neckToHeadRatio = 0.70;
    rotate_cube = 0;
+   headToBodyScalar = 2;
+   neckHeight = headScale/4;
+   bodyHeight = headScale * 2.25;
+   robotOffset = 0;
 }
 
 void Robot::draw(float scale){
-   glTranslatef(0, scale, 0);
+   robotOffset = headScale + neckToHeadRatio*headScale + bodyHeight; 
+   headHeight = headScale * 2;
+   glMatrixMode(GL_MODELVIEW);
    headScale = scale; 
+   glPushMatrix();
+   //glRotatef(90, 0, 1, 0); //For debugging only
+   glTranslatef(0, robotOffset, 0);
    drawAndRotateHead();
    drawBody();
+   glPopMatrix();
 }
 
 void Robot::drawAndRotateHead(){
-   glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    glRotatef(headRotationAngle, 0, 1, 0);
    drawHead();
@@ -34,7 +45,7 @@ void Robot::setHeadRotationAngle(float newAngle){
 }
 
 void Robot::drawHead(){
-   float backHeadScale = headScale * 0.55;
+   float backHeadScale = headScale * 0.55; //used for the square on back of head
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    //glTranslatef(headX, headY, headZ);
@@ -56,20 +67,18 @@ void Robot::drawHead(){
 
 void Robot::drawEyes(){
    glMatrixMode(GL_MODELVIEW);
-   float eyeRadius = 0.5;
+   float eyeRadius = 0.3*headScale;
    float resolution = 10;
    float headCenterOffset = headScale + 0.01;
    //Right Eye
    glPushMatrix();   
    glTranslatef(headScale/2, headScale/3, headCenterOffset);
-   glRotatef(180, 0, 1, 0);
    glColor3f(1.0,1.0, 1.0);
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
    //Left Eye
    glPushMatrix();
    glTranslatef(-headScale/2, headScale/3, headCenterOffset);
-   glRotatef(180, 0, 1, 0);
    glColor3f(1.0, 1.0, 1.0);
    gluDisk(eyeQuad, 0, eyeRadius, resolution, 1);
    glPopMatrix();
@@ -78,7 +87,7 @@ void Robot::drawEyes(){
 void Robot::drawAntenna(){
    antY=headScale;
    float antRadius = 0.15;
-   float antHeight = 1.35;
+   float antHeight = 0.75*headScale;
    float antRotation = 270;
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
@@ -87,7 +96,7 @@ void Robot::drawAntenna(){
    glRotatef(antRotation, 1.0, 0 ,0.0);
    glColor3f(0.6,0.1,0.3); //Purple
    gluCylinder(antQuad, antRadius, 0.05, antHeight, 10, 10); //Cone Shaped
-   drawCube(0.8, 0.3, 0.1, 0, 0, antHeight);
+   drawCube(0.6*headScale, 0.2*headScale, 0.05*headScale, 0, 0, antHeight);
    glPopMatrix(); 
 }
 
@@ -100,15 +109,14 @@ void Robot::rotateAntenna(){
 }
 
 void Robot::drawNeck(){
-      float neckToHeadRatio = 0.70;
    float neckRadius = headScale * neckToHeadRatio;
    float neckDiameter = neckRadius *2;     
-   float neckHeight = 1;
+   neckY = abs(headY - headScale);
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    glColor3f(1.0, 0.27, 0);
    // I am using thaumaturgy here to find the proper location
-   glTranslatef(headX, headY-neckHeight*2, -headScale+neckDiameter*neckToHeadRatio);
+   glTranslatef(headX, -neckY, -headScale+neckDiameter*neckToHeadRatio);
    glRotatef(90, 1, 0, 0);
    gluCylinder(neckQuad, neckRadius, neckRadius, neckHeight, 10, 10);
    glPopMatrix();
@@ -117,10 +125,11 @@ void Robot::drawNeck(){
 void Robot::drawBody(){
    glPushMatrix();
    // square on back of head for identification
-   glTranslatef(headX, headY, headZ);
+   glTranslatef(headX, -(headHeight+neckHeight+neckY), headZ);
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
    //translate body down by headScale, -1 for neck height * 2.25 for body height
-   drawCube(headScale*1.5, headScale*2, headScale*1.5, 0, -(headScale+1)*2.25, 0);  
+   drawCube(headScale*1.5, headScale*headToBodyScalar,
+	    headScale*1.5, 0, 0, 0);  
    drawBackTriangles();
    glPopMatrix();  
    glMatrixMode(GL_MODELVIEW);
@@ -128,18 +137,28 @@ void Robot::drawBody(){
 
 void Robot::drawBackTriangles(){
    // triangles on back of body for identification
-   float backPolyScale = headScale * 1.5 * 0.55;
+   float backPolyScale = headScale;
+   glPushMatrix();
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, -backPolyScale*4, -headScale*1.6);
-   glVertex3f(0, -backPolyScale*2, -headScale*1.6); //Point
-   glVertex3f(-backPolyScale, -backPolyScale*4, -headScale*1.6);
+   glVertex3f(backPolyScale, bodyHeight/8, -headScale*3.6);
+   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*3.6); 
+   glVertex3f(0, backPolyScale*2, -headScale*3.6);  //Point
    glEnd();
+   glPopMatrix();
+
+   glPushMatrix();
+   glTranslatef(0,-bodyHeight/3,0);
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, -backPolyScale*6, -headScale*1.6);
-   glVertex3f(0, -backPolyScale*4, -headScale*1.6); //Point
-   glVertex3f(-backPolyScale, -backPolyScale*6, -headScale*1.6);
+   glVertex3f(backPolyScale, bodyHeight/8, -headScale*3.6);
+   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*3.6); 
+   glVertex3f(0, backPolyScale*2, -headScale*3.6);  //Point
+   glEnd();
+   glPopMatrix();
+  
+
+      
    glEnd();
 }
 
@@ -147,64 +166,58 @@ void Robot::drawCube(float xScale, float yScale, float zScale,
 	      float xTrans, float yTrans, float zTrans){  
    glPushMatrix();
    glTranslatef(xTrans ,yTrans, zTrans);
-   /*Cutting these in half since each vertex is the scale distance from the
-     centerpoint and we want it to be to the scale provided, not twice as large.
-     We could probably find a better solution later. */
-   /*xScale = xScale / 2;
-   yScale = yScale / 2;
-   zScale = zScale / 2;*/
-   // Puke Green - FRONT
-   glBegin(GL_POLYGON);
+   //FRONT
+    glBegin(GL_POLYGON);
    glColor3f(0.1, 0.5, 0.5);
-   glVertex3f(xScale, -yScale, -zScale); 
-   glVertex3f(xScale, yScale, -zScale); 
+   glVertex3f(-xScale, -yScale, -zScale);
    glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(-xScale, -yScale, -zScale); 
+   glVertex3f(xScale, yScale, -zScale);  
+   glVertex3f(xScale, -yScale, -zScale);
    glEnd();
- 
-   // Brown Face - BACK
-   glBegin(GL_POLYGON);
-   glColor3f(0.8, 0.5, 0.3);  
-   glVertex3f(-xScale, -yScale, zScale);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(xScale, yScale, zScale);
+   
+   //BACK
+    glBegin(GL_POLYGON);
+   glColor3f(0.8, 0.5, 0.3);
    glVertex3f(xScale, -yScale, zScale);
+   glVertex3f(xScale, yScale, zScale);
+   glVertex3f(-xScale, yScale, zScale);
+   glVertex3f(-xScale, -yScale, zScale);
    glEnd();
  
    // Purple side - RIGHT
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.0, 1.0);
-   glVertex3f( xScale, -yScale, zScale);
-   glVertex3f( xScale, yScale, zScale);
-   glVertex3f( xScale, yScale, -zScale);
    glVertex3f( xScale, -yScale, -zScale);
+   glVertex3f( xScale, yScale, -zScale);
+   glVertex3f( xScale, yScale, zScale);
+   glVertex3f( xScale, -yScale, zScale);  
    glEnd();
  
    // Green side - LEFT
    glBegin(GL_POLYGON);
    glColor3f(0.0, 1.0, 0.0);
-   glVertex3f(-xScale, -yScale, -zScale);
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(-xScale, yScale, zScale);
    glVertex3f(-xScale, -yScale, zScale);
+   glVertex3f(-xScale, yScale, zScale);
+   glVertex3f(-xScale, yScale, -zScale);
+   glVertex3f(-xScale, -yScale, -zScale);
    glEnd();
  
    // Blue side - TOP
    glBegin(GL_POLYGON);
    glColor3f(0.0, 0.0, 1.0);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(xScale, yScale, -zScale);
    glVertex3f(xScale, yScale, zScale);
+   glVertex3f(xScale, yScale, -zScale);
+   glVertex3f(-xScale, yScale, -zScale);
+   glVertex3f(-xScale, yScale, zScale);
    glEnd();
  
    // Red side - BOTTOM
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.0, 0.0);
-   glVertex3f(-xScale, -yScale, -zScale);
-   glVertex3f(-xScale, -yScale, zScale);
-   glVertex3f(xScale, -yScale, zScale);
    glVertex3f(xScale, -yScale, -zScale);
+   glVertex3f(xScale, -yScale, zScale);
+   glVertex3f(-xScale, -yScale, zScale);
+   glVertex3f(-xScale, -yScale, -zScale);
    glEnd();
 
    glPopMatrix();
