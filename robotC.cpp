@@ -164,8 +164,8 @@ void Robot::drawBackTriangles(){
    glPushMatrix();
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, bodyHeight/8, -headScale*3.6);
-   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*3.6); 
+   glVertex3f(backPolyScale, bodyHeight/8, -headScale*2);
+   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*2); 
    glVertex3f(0, backPolyScale*2, -headScale*3.6);  //Point
    glEnd();
    glPopMatrix();
@@ -174,8 +174,8 @@ void Robot::drawBackTriangles(){
    glTranslatef(0,-bodyHeight/3,0);
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, bodyHeight/8, -headScale*3.6);
-   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*3.6); 
+   glVertex3f(backPolyScale, bodyHeight/8, -headScale*2);
+   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*2); 
    glVertex3f(0, backPolyScale*2, -headScale*3.6);  //Point
    glEnd();
    glPopMatrix();
