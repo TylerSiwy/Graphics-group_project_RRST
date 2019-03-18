@@ -22,11 +22,10 @@ void StrongBuilding:: draw(float scale){
 
 WeakBuilding::WeakBuilding(){
    clicks = 0;
-   quad = gluNewQuadric();
 }
 
 void WeakBuilding::draw(float scale){
-   drawCylinderBuilding(scale, quad);
+   drawCylinderBuilding(scale);
 }
 
 UnbreakableBuilding::UnbreakableBuilding(){
