@@ -20,12 +20,22 @@ void Robot::draw(float scale){
    drawBody();
 }
 
+//smoothRotate
+
 void Robot::drawAndRotateHead(){
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
-   glRotatef(headRotationAngle, 0, 1, 0);
+   //glRotatef(smoothRotate, 0, 1, 0);
    drawHead();
    glPopMatrix();
+}
+
+void Robot::setHeadRotationAngle(float newAngle){
+   headRotationAngle = newAngle;
+}
+
+float Robot::getHeadRotationAngle(){
+   return headRotationAngle;
 }
 
 void Robot::drawHead(){
