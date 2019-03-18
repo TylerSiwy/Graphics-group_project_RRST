@@ -11,7 +11,7 @@
 #include "city.h"
 #include "robotC.h"
 using namespace std;
-
+#define SIZE 512
 // Window Options
 int WindowWidth = 700;
 int WindowHeight = 700;
@@ -41,19 +41,21 @@ void Mouse(int button, int state, int x, int y);
 void Keyboard(unsigned char key, int x, int y);
 void Idle();
 void Special(int key, int x, int y);
-
 void init(int &argc, char ** argv);
-
-
+//////////Rchanges
+void drawBuildings(GLenum mode);
+void processHits (GLint hits, GLuint buffer[]);
+//////////Rchanges
 int main(int argc, char ** argv) {
    //myCity.printLayout();
    glutInit(&argc, argv);
    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
    glutInitWindowSize(WindowWidth, WindowHeight);
+   glutInitWindowPosition (200, 100);
    WindowID = glutCreateWindow(WindowName);
    glutDisplayFunc(&Display);
    glutIdleFunc(&Idle);
-   //glutReshapeFunc(&Reshape);
+//   glutReshapeFunc(&Reshape);
    glutMouseFunc(&Mouse);
    glutKeyboardFunc(&Keyboard);
    glutSpecialFunc(&Special);
@@ -91,7 +93,8 @@ void Special(int key, int x, int y) {
 		eyex += 1;
 		atx += 1;
 		break;
-	}
+		}
+   
 }
 
 void Keyboard(unsigned char key, int x, int y) {
@@ -147,6 +150,43 @@ void Display() {
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyex, eyey, eyez, atx, aty, atz, upx, upy, upz);
 	myCity.drawCity(10);
+	drawBuildings(GL_RENDER);
 	t1000.draw(1);
 	glutSwapBuffers();
+	/////////R changes
+	glFlush();
+	/////////R changes
+}
+
+void drawBuildings(GLenum mode)
+{
+   //This will eventually be the total number of buildings
+   int numBuilding=10;
+   //This i needs to start at 1, as 0 on the stack is already defined
+   //This will protect the stack from underflow dumps
+   for(int i=1; i<numBuilding; i++)
+   {
+      if(mode == GL_SELECT)
+	 glLoadName(i);
+      //  the building are created here
+   }
+}
+
+void processHits (GLint hits, GLuint buffer[])
+{
+   int names, *ptr;
+   printf ("hits = %d\n", hits);
+   ptr = (GLint *) buffer; 
+   for (int i = 0; i < hits; i++) {	/*  for each hit  */
+      names = *ptr;
+      ptr+=3;
+      for (int j = 0; j < names; j++) { /*  for each name */
+	 //Here we need to send a message with the
+	 //*ptr value to destroy the correct building  
+         if(*ptr==1) printf ("red rectangle\n");
+         else printf ("blue rectangle\n");
+         ptr++;
+      }
+      printf ("\n");
+   }
 }
