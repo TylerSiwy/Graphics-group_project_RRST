@@ -48,7 +48,7 @@ double upZ = 0.0;
 
 // Objects
 City myCity(20, 20);
-Robot t1000;                                    // ROBOT FUCKER
+Robot t1000;
 
 // Callback Functions
 void Display();
@@ -115,16 +115,16 @@ void Special(int key, int x, int y) {
    if(paused==false){
       switch(key){
 	 case GLUT_KEY_F1://turn head to face forwards (the default)
-	    //headRotationAngle = 0;
-	    t1000.smoothRotate(0); 
+	    t1000.setHeadRotationAngle(0);
+	    //t1000.smoothRotate(0); 
 	    break;
 	 case GLUT_KEY_F2://turn robot head to the right
 	    t1000.setHeadRotationAngle(90);
 	    //t1000.smoothRotate(90);
 	    break;
 	 case GLUT_KEY_F3://turn robot head to the left
-	    //headRotationAngle = -90;
-	    t1000.smoothRotate(-90);
+	    t1000.setHeadRotationAngle(-90);
+	    //t1000.smoothRotate(-90);
 	    break;
 	 case GLUT_KEY_F4://makes the view go back to the regular view
 	    eyeX = 0;
@@ -199,7 +199,7 @@ void Keyboard(unsigned char key, int x, int y) {
 	    //return the robot to the origin if the robot is on the boundary
 	    //do nothing if not on boundary
 	    break;
-	 case 'p':
+	 case 27:
 	    // This closes the program.
 	    exit(0);
 	 default:
