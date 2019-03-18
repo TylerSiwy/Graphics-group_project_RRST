@@ -54,6 +54,7 @@ void Robot::smoothRotate(float angle){
 
 void Robot::drawAndRotateHead(){
    glPushMatrix();
+   glRotatef(headRotationAngle, 0, 1, 0);
    //glRotatef(smoothRotate(headRotationAngle), 0, 1, 0);
    drawHead();
    glPopMatrix();
