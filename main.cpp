@@ -19,20 +19,36 @@ const char* WindowName = "Rylan Bueckert";
 
 int WindowID;
 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ For special keys ~~~~~~~~~~~~
+float angleViewDist=30;
+//Determines if game is paused or not
+static bool paused=false;
+
+//Lookat Vars
+//float eyeX = 0;
+//float eyeY = 0;
+//float eyeZ = 15;
+
+//Angle of head for rotation on button presses
+float headRotationAngle = 0;
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ For special keys (ryan is speical) ~~~~~~~~~~~~
+
 // LookAt
-double eyex = 0.0;
-double eyey = 50.0;
-double eyez = 50.0;
-double atx = 0.0;
-double aty = 0.0;
-double atz = 0.0;
-double upx = 0.0;
-double upy = 1.0;
-double upz = -10.0;
+double eyeX = 0.0;
+double eyeY = 50.0;
+double eyeZ = 50.0;
+double atX = 0.0;
+double atY = 0.0;
+double atZ = 0.0;
+double upX = 0.0;
+double upY = 1.0;
+double upZ = 0.0;
 
 // Objects
 City myCity(20, 20);
-Robot t1000;
+Robot t1000;                                    // ROBOT FUCKER
 
 // Callback Functions
 void Display();
@@ -74,7 +90,7 @@ void Idle() {
 }
 
 void Special(int key, int x, int y) {
-	switch(key) {
+/*	switch(key) {
 	case GLUT_KEY_DOWN:
 		eyez += 1;
 		atz += 1;
@@ -91,51 +107,138 @@ void Special(int key, int x, int y) {
 		eyex += 1;
 		atx += 1;
 		break;
-	}
+		}*/
+
+// New special keys
+   if(paused==false){
+      switch(key){
+	 case GLUT_KEY_F1://turn head to face forwards (the default)
+	    //headRotationAngle = 0;
+	    t1000.smoothRotate(0); 
+	    break;
+	 case GLUT_KEY_F2://turn robot head to the right
+	    t1000.setHeadRotationAngle(90);
+	    //t1000.smoothRotate(90);
+	    break;
+	 case GLUT_KEY_F3://turn robot head to the left
+	    //headRotationAngle = -90;
+	    t1000.smoothRotate(-90);
+	    break;
+	 case GLUT_KEY_F4://makes the view go back to the regular view
+	    eyeX = 0;
+	    eyeY = 0;
+	    eyeZ = angleViewDist;
+	    break;
+	 case GLUT_KEY_F5://looks at robot from the BACK LEFT
+	    eyeX = angleViewDist;
+	    eyeY = angleViewDist;
+	    eyeZ = angleViewDist;
+	    break;
+	 case GLUT_KEY_F6://looks at robot from the BACK RIGHT
+	    eyeX = -angleViewDist;
+	    eyeY =  angleViewDist;
+	    eyeZ =  angleViewDist;
+	    break;
+	 case GLUT_KEY_F7://looks at robot from the FRONT RIGHT
+	    eyeX = -angleViewDist;
+	    eyeY =  angleViewDist;
+	    eyeZ = -angleViewDist;
+	    break;
+	 case GLUT_KEY_F8://looks at robot from the FRONT LEFT
+	    eyeX =  angleViewDist;
+	    eyeY =  angleViewDist;
+	    eyeZ = -angleViewDist;
+	    break;
+	 case GLUT_KEY_F9://looks at robot from the BACK LEFT at GREATER dist
+	    eyeX = angleViewDist*2;
+	    eyeY = angleViewDist*2;
+	    eyeZ = angleViewDist*2;
+	    break;
+	 case GLUT_KEY_F10://looks at robot from the BACK RIGHT at GREATER dist
+	    eyeX = -angleViewDist*2;
+	    eyeY =  angleViewDist*2;
+	    eyeZ =  angleViewDist*2;
+	    break;
+	 case GLUT_KEY_F11://looks at robot from the FRONT RIGHT at GREATER dist
+	    eyeX = -angleViewDist*2;
+	    eyeY =  angleViewDist*2;
+	    eyeZ = -angleViewDist*2;
+	    break;
+	 case GLUT_KEY_F12://looks at robot from the FRONT LEFT at GREATER dist
+	    eyeX =  angleViewDist*2;
+	    eyeY =  angleViewDist*2;
+	    eyeZ = -angleViewDist*2;
+	    break;
+
+	 default:
+	    printf ("KP: No action for %d.\n", key);
+	    break;
+      }
+   }
+// New special keys
+
 }
 
 void Keyboard(unsigned char key, int x, int y) {
-	switch(key) {
-	case 'w':
-		break;
-
-	case 'a':
-		break;
-
-	case 's':
-		break;
-
-	case 'd':
-
-		break;
-
-	default:
-		break;
-	}
+   if(paused==false){ 
+      switch(key){
+	 // if(paused==false){
+	 cout << key;
+	 case 'z': // z
+	    //This will now move the robot forward
+	    break;
+	 case 'a':
+	    //turn robot right
+	    break;
+	 case 'q':
+	    //turn robot left
+	    break;
+	 case 'r':
+	    //return the robot to the origin if the robot is on the boundary
+	    //do nothing if not on boundary
+	    break;
+	 case 'p':
+	    // This closes the program.
+	    exit(0);
+	 default:
+	    printf ("KP: No action for %d.\n", key);
+	    break;
+      }
+   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ New special keys
+void myKeyboardUpKey(unsigned char key, int x, int y){
+   switch(key){
+      case 'p'://pauses the game, press again to unpause
+	 paused = !paused;
+	 cout << paused;
+	 break;
+      default:
+	 printf ("KP: No action for %d.\n", key);
+	 break;
+   }
+}
+
+void specialKeysUp( int key, int x, int y ){
+   if(paused==false){
+      switch(key){
+	 case GLUT_KEY_F2:
+	 case GLUT_KEY_F3:
+	    //robot.setHeadRotationAngle(0);
+	    break;
+	 default:
+	    break;
+      }
+   }
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ New special keys
+
 void Mouse(int button, int state, int x, int y) {
-	switch(button) {
-	case GLUT_RIGHT_BUTTON:
-		if(state == GLUT_DOWN) {
-
-		}
-		if(state == GLUT_UP) {
-
-		}
-		break;
-
-	case GLUT_LEFT_BUTTON:
-		if(state == GLUT_DOWN) {
-
-		}
-		if(state == GLUT_UP) {
-
-		}
-		break;
-	default:
-		break;
-	}
+   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
+   {
+      printf ("mouseX %d mouseY %d\n",x,y);
+   }
 }
 
 void Display() {
@@ -145,7 +248,7 @@ void Display() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluPerspective(50, 1, 5, 1000);
-	gluLookAt(eyex, eyey, eyez, atx, aty, atz, upx, upy, upz);
+	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
 	myCity.drawCity(10);
 	t1000.draw(1);
 	glutSwapBuffers();

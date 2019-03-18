@@ -14,6 +14,8 @@ Robot::Robot(){
    eyeQuad = gluNewQuadric();
    neckToHeadRatio = 0.70;
    rotate_cube = 0;
+   //For smooth rotation
+   currentAngle = 0;
    headToBodyScalar = 2;
    neckHeight = headScale/4;
    bodyHeight = headScale * 2.25;
@@ -33,15 +35,36 @@ void Robot::draw(float scale){
    glPopMatrix();
 }
 
+// Smoothly rotates the robot's head to left or right. Where angle
+// is the max angle to rotate to.
+void Robot::smoothRotate(float angle){
+   if(angle > 0){
+      currentAngle += 10;
+      if(currentAngle > angle)
+	 currentAngle = angle;
+      //rotateRight = true;
+   }
+   if(angle < 0){
+      currentAngle -= 10;
+      if(currentAngle < angle)
+	 currentAngle = angle;
+      //rotateLeft = true;
+   }
+}
+
 void Robot::drawAndRotateHead(){
    glPushMatrix();
-   glRotatef(headRotationAngle, 0, 1, 0);
+   //glRotatef(smoothRotate(headRotationAngle), 0, 1, 0);
    drawHead();
    glPopMatrix();
 }
 
 void Robot::setHeadRotationAngle(float newAngle){
    headRotationAngle = newAngle;
+}
+
+float Robot::getHeadRotationAngle(){
+   return headRotationAngle;
 }
 
 void Robot::drawHead(){
@@ -163,11 +186,11 @@ void Robot::drawBackTriangles(){
 }
 
 void Robot::drawCube(float xScale, float yScale, float zScale,
-	      float xTrans, float yTrans, float zTrans){  
+		     float xTrans, float yTrans, float zTrans){  
    glPushMatrix();
    glTranslatef(xTrans ,yTrans, zTrans);
    //FRONT
-    glBegin(GL_POLYGON);
+   glBegin(GL_POLYGON);
    glColor3f(0.1, 0.5, 0.5);
    glVertex3f(-xScale, -yScale, -zScale);
    glVertex3f(-xScale, yScale, -zScale);

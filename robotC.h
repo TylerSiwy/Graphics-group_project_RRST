@@ -13,6 +13,7 @@ class Robot {
   public:
    Robot();
    void setHeadRotationAngle(float newAngle);
+   void smoothRotate(float angle); // Smoothly rotates the robot's head
    void draw(float scale); //Draws all compenents of the robot
   protected:
    //All other components should be dynamically sized from headScale
@@ -21,6 +22,9 @@ class Robot {
    float robotOffset;
    float headX, headY, headZ;
    float headRotationAngle;
+
+   float currentAngle; // Added for smooth rotation
+   
    float antX, antY, antZ;
    float antAngle;
    float neckX, neckY, neckZ;
@@ -46,5 +50,7 @@ class Robot {
    void drawNeck(); //Draws only the neck
    void drawBody(); //Draws the body, including the backTriangles
    void drawBackTriangles(); //Draws only the backTriangles
+
+   float getHeadRotationAngle();
 };
 
