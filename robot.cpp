@@ -108,15 +108,15 @@ void Display(void){
 
    //testerino
    glLoadIdentity();
-   //glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
-   gluPerspective(45, 1.0, 1.0, 100.0);
+   glOrtho(-10.0, 10.0, -10.0, 10.0, 200.0, -200.0);
+   //gluPerspective(45, 1.0, 1.0, 100.0); // CAUSING VIEWING ISSUES
    gluLookAt(eyeX, eyeY, eyeZ, lookAtX, lookAtY, lookAtZ, 0.0, 1.0, 0.0); 
    // Clear the color and depth
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
-   // drawRobot();
+   drawRobot();
    //drawCylinderBuilding(1, eyeQuad); //for debugging only
-   drawPyramidBuilding(1, 0.5, 0.5, 0.7); //for debugging only
+   //drawPyramidBuilding(1, 0.5, 0.5, 0.7); //for debugging only
    glutSwapBuffers();
 }
 
@@ -282,7 +282,7 @@ void drawHead(){
    float backHeadScale = headScale * 0.55;
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
-   glTranslatef(headX, headY, headZ);
+   //glTranslatef(headX, headY, headZ);
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);
    drawCube(headScale, headScale, headScale, 0, 0, 0);
    drawNeck();
@@ -361,7 +361,6 @@ void rotateAntena(){
 
 void drawBody(){  
    glPushMatrix();
-   drawAntenna();
    // square on back of head for identification
    glTranslatef(headX, headY, headZ);
    glRotatef(rotate_cube, 0.0, 0.0, 1.0);

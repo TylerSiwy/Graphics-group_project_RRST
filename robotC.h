@@ -1,4 +1,7 @@
 #pragma once
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>   // OpenGL itself.
 #include <GL/glu.h>  // GLU support library.
 #include <GL/glut.h> // GLUT support library.
@@ -24,6 +27,8 @@ class Robot {
    GLUquadric *quad;
    GLUquadric *eyeQuad;
   private:
+   void drawCube(float xScale, float yScale, float zScale,
+		 float xTrans, float yTrans, float zTrans);
    void drawAndRotateHead(); //Draws the head and handles it's rotation
    void drawHead(); //Draws the head, including eyes, antenna, and neck
    void drawEyes(); //Draws only the eyes
