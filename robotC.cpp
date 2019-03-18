@@ -15,6 +15,7 @@ Robot::Robot(){
 }
 
 void Robot::draw(float scale){
+   glTranslatef(0, scale, 0);
    headScale = scale; 
    drawAndRotateHead();
    drawBody();
@@ -26,6 +27,10 @@ void Robot::drawAndRotateHead(){
    glRotatef(headRotationAngle, 0, 1, 0);
    drawHead();
    glPopMatrix();
+}
+
+void Robot::setHeadRotationAngle(float newAngle){
+   headRotationAngle = newAngle;
 }
 
 void Robot::drawHead(){

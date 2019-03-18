@@ -11,6 +11,7 @@ using namespace std;
 class Robot {
   public:
    Robot();
+   void setHeadRotationAngle(float newAngle);
    void draw(float scale); //Draws all compenents of the robot
   protected:
    //All other components should be dynamically sized from headScale
