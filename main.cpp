@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "city.h"
+#include "robotC.h"
 using namespace std;
 
 // Window Options
@@ -31,6 +32,7 @@ double upz = -10.0;
 
 // Objects
 City myCity(20, 20);
+Robot t1000;
 
 // Callback Functions
 void Display();
@@ -145,5 +147,6 @@ void Display() {
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyex, eyey, eyez, atx, aty, atz, upx, upy, upz);
 	myCity.drawCity(10);
+	t1000.draw(1);
 	glutSwapBuffers();
 }
