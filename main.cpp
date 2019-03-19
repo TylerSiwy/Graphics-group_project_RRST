@@ -49,7 +49,11 @@ double upZ = 0.0;
 // Objects
 City myCity(20, 20);
 Robot t1000;
+float theMasterScale = 10;
 
+// Robot Location
+float robotX = 0;
+float robotZ = 0;
 // Callback Functions
 void Display();
 //void Reshape(int width, int height);
@@ -92,26 +96,6 @@ void Idle() {
 }
 
 void Special(int key, int x, int y) {
-/*	switch(key) {
-	case GLUT_KEY_DOWN:
-		eyez += 1;
-		atz += 1;
-		break;
-	case GLUT_KEY_LEFT:
-		eyex -= 1;
-		atx -= 1;
-		break;
-	case GLUT_KEY_UP:
-		eyez -= 1;
-		atz -= 1;
-		break;
-	case GLUT_KEY_RIGHT:
-		eyex += 1;
-		atx += 1;
-		break;
-		}*/
-
-// New special keys
    if(paused==false){
       switch(key){
 	 case GLUT_KEY_F1://turn head to face forwards (the default)
@@ -171,13 +155,31 @@ void Special(int key, int x, int y) {
 	    eyeY =  angleViewDist*2;
 	    eyeZ = -angleViewDist*2;
 	    break;
-
+	 case GLUT_KEY_DOWN: //Moves camera down
+		eyeZ += 1;
+		atZ += 1;
+		break;
+	 case GLUT_KEY_LEFT://Moves camera left
+		eyeX -= 1;
+		atX -= 1;
+		break;
+	 case GLUT_KEY_UP://Moves camera up
+		eyeZ -= 1;
+		atZ -= 1;
+		break;
+	 case GLUT_KEY_RIGHT://Moves camera right
+		eyeX += 1;
+		atX += 1;
+		break;
 	 default:
 	    printf ("KP: No action for %d.\n", key);
 	    break;
       }
    }
 // New special keys
+}
+
+void moveRobot(){
 
 }
 
@@ -187,7 +189,7 @@ void Keyboard(unsigned char key, int x, int y) {
 	 // if(paused==false){
 	 cout << key;
 	 case 'z': // z
-	    //This will now move the robot forward
+	    robotZ += theMasterScale;//This will now move the robot forward
 	    break;
 	 case 'a':
 	    //turn robot right
@@ -196,6 +198,7 @@ void Keyboard(unsigned char key, int x, int y) {
 	    //turn robot left
 	    break;
 	 case 'r':
+	    robotZ = robotX = 0;
 	    //return the robot to the origin if the robot is on the boundary
 	    //do nothing if not on boundary
 	    break;
@@ -209,7 +212,7 @@ void Keyboard(unsigned char key, int x, int y) {
    }
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ New special keys
+
 void myKeyboardUpKey(unsigned char key, int x, int y){
    switch(key){
       case 'p'://pauses the game, press again to unpause
@@ -222,20 +225,6 @@ void myKeyboardUpKey(unsigned char key, int x, int y){
    }
 }
 
-void specialKeysUp( int key, int x, int y ){
-   if(paused==false){
-      switch(key){
-	 case GLUT_KEY_F2:
-	 case GLUT_KEY_F3:
-	    //robot.setHeadRotationAngle(0);
-	    break;
-	 default:
-	    break;
-      }
-   }
-}
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ New special keys
-
 void Mouse(int button, int state, int x, int y) {
    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
    {
@@ -244,14 +233,13 @@ void Mouse(int button, int state, int x, int y) {
 }
 
 void Display() {
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
-	myCity.drawCity(10);
+	myCity.drawCity(theMasterScale);
 	drawBuildings(GL_RENDER);
 	t1000.draw(1);
 	glutSwapBuffers();

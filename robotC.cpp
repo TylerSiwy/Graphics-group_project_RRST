@@ -28,7 +28,7 @@ void Robot::draw(float scale){
    glMatrixMode(GL_MODELVIEW);
    headScale = scale; 
    glPushMatrix();
-   //glRotatef(90, 0, 1, 0); //For debugging only
+   glRotatef(180, 0, 1, 0);
    glTranslatef(0, robotOffset, 0);
    drawAndRotateHead();
    drawBody();
@@ -56,7 +56,6 @@ void Robot::drawAndRotateHead(){
    glPushMatrix();
    glRotatef(headRotationAngle, 0, 1, 0);
    //glRotatef(smoothRotate(headRotationAngle), 0, 1, 0);
-   glRotatef(headRotationAngle, 0, 1, 0);
    drawHead();
    glPopMatrix();
 }
@@ -80,12 +79,12 @@ void Robot::drawHead(){
    drawEyes();
    drawAntenna();
    // square on back of head for identification
-   glBegin(GL_POLYGON);
+   glBegin(GL_QUADS);
    glColor3f(0.5, 0.5, 1.0);
-   glVertex3f(backHeadScale, -backHeadScale, -headScale-0.1);
-   glVertex3f(backHeadScale, backHeadScale, -headScale-0.1);
-   glVertex3f(-backHeadScale, backHeadScale,-headScale-0.1);
-   glVertex3f(-backHeadScale, -backHeadScale, -headScale-0.1);
+   glVertex3f(-backHeadScale, -backHeadScale, -headScale-0.01);
+   glVertex3f(-backHeadScale, backHeadScale,-headScale-0.01);
+   glVertex3f(backHeadScale, backHeadScale, -headScale-0.01);
+   glVertex3f(backHeadScale, -backHeadScale, -headScale-0.01);
    glEnd();
    glPopMatrix();
 }
