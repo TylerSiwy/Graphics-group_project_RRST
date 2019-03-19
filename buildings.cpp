@@ -114,10 +114,13 @@ void Building::drawRectBuilding(float xScale, float yScale, float zScale,
    glBegin(GL_POLYGON);
    //glColor3f(1.0f, 0.0f, 0.0f);     // Red
    glColor3f(buildingR, buildingG, buildingB);
-   glVertex3f(-xScale, 0, -zScale); 
-   glVertex3f(xScale, 0, -zScale); 
-   glVertex3f(xScale, yScale, -zScale); 
    glVertex3f(-xScale, yScale, -zScale);
+   glVertex3f(xScale, yScale, -zScale);
+   glVertex3f(xScale, 0, -zScale); 
+   glVertex3f(-xScale, 0, -zScale); 
+
+
+
    glEnd();
  
    //BACK
