@@ -9,6 +9,8 @@ class City {
    // Sizes are in city blocks
    City(int xSize, int zSize);
    void drawCity(double blockSize);
+
+   // Prints the city's layout to the console
    void printLayout();
    bool isRoad(unsigned int x, unsigned int z);
   private:
