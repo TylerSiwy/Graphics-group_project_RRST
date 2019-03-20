@@ -10,7 +10,9 @@ using namespace std;
 
 class Building {
   public:
-   virtual void draw(float scale)=0;
+   int getBuildingHealth(){return buildingHealth;};
+   virtual void draw(float scale) = 0; 
+   virtual void reduceHealth(int damage) = 0;
   protected:
    void drawCube(float xScale, float yScale, float zScale,
 		 float xTrans, float yTrans, float zTrans);
@@ -20,25 +22,29 @@ class Building {
    void drawPyramidBuilding(float scale, float buildingR,
 			    float buildingG, float buildingB);
    void drawCylinderBuilding(float scale);
+   
    GLUquadric *quad;
    int buildingScale;
-   int clicks;//Number of clicks from the user
+   int buildingHealth;
 };
 
 class StrongBuilding: public Building {
   public:
    StrongBuilding();
+   void reduceHealth(int damage);
    void draw(float scale);
 };
 
 class WeakBuilding: public Building {
   public:
    WeakBuilding();
+   void reduceHealth(int damage);
    void draw(float scale);
 };
 
 class UnbreakableBuilding: public Building {
   public:
    UnbreakableBuilding();
+   void reduceHealth(int damage);
    void draw(float scale);
 };
