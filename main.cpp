@@ -81,14 +81,15 @@ int main(int argc, char ** argv) {
 }
 
 void init(int &argc, char ** argv) {
-	glClearColor(0.52, 0.80, 0.92, 0.0);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);	
+   cout << myCity.countBuildings();
+   glClearColor(0.52, 0.80, 0.92, 0.0);
+   glEnable(GL_DEPTH_TEST);
+   glEnable(GL_CULL_FACE);
+   glCullFace(GL_BACK);	
 }
 
 void Idle() {
-	glutPostRedisplay();
+   glutPostRedisplay();
 }
 
 void Special(int key, int x, int y) {
@@ -251,8 +252,8 @@ void Display() {
 	glLoadIdentity();
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
-	myCity.drawCity(10);
-	drawBuildings(GL_RENDER);
+	myCity.drawCity(10, GL_RENDER);
+	//drawBuildings(GL_RENDER);
 	t1000.draw(1);
 	glutSwapBuffers();
 	/////////R changes

@@ -8,11 +8,12 @@ class City {
   public:
    // Sizes are in city blocks
    City(int xSize, int zSize);
-   void drawCity(double blockSize);
+   void drawCity(double blockSize, GLenum mode);
 
    // Prints the city's layout to the console
    void printLayout();
    bool isRoad(unsigned int x, unsigned int z);
+   int countBuildings();
   private:
    class zone {
      public:

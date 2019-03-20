@@ -64,7 +64,8 @@ City::City(int xSize, int zSize) {
    }
 }
 
-void City::drawCity(double blockSize) {
+void City::drawCity(double blockSize, GLenum mode) {
+   int buildingsDrawn = 0;
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    // Centre city on (0,0)
@@ -130,6 +131,12 @@ void City::drawCity(double blockSize) {
 		     }
 	       if(cityLayout[i][j].buildingsOnBlock[k]) {
 
+		  // For building selection
+		  if(mode == GL_SELECT) {
+		     buildingsDrawn++;
+		     glLoadName(buildingsDrawn);
+		  }
+		  
                   // Draw building
 		  cityLayout[i][j].buildingsOnBlock[k] -> draw(0.40 * blockSize);
 	       }
@@ -161,4 +168,17 @@ bool City::isRoad(unsigned int x, unsigned int z) {
    if(z >= cityLayout.size() || z < 0)
       return false;
    return cityLayout[z][x].road;
+}
+
+int City::countBuildings() {
+   int count = 0;
+   for(unsigned int i = 0; i < cityLayout.size(); i++) {
+      for(unsigned int j = 0; j < cityLayout[i].size(); j++) {
+	 for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
+	    if(cityLayout[i][j].buildingsOnBlock[k])
+	       count++;
+	 }
+      }
+   }
+   return count;
 }
