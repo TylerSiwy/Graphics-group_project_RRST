@@ -248,5 +248,3 @@ void Building::drawCylinderBuilding(float scale){
    gluDisk(quad, scale*radiusScalar, scale*radiusScalar, 5, 5);
    glPopMatrix();
 }
-
-
