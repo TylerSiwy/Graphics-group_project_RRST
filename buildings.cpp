@@ -4,8 +4,8 @@
 using namespace std;
 
 StrongBuilding::StrongBuilding(){
-   clicks=0;
    quad = gluNewQuadric();
+   buildingHealth = 3;
 }
 
 void StrongBuilding:: draw(float scale){
@@ -14,21 +14,33 @@ void StrongBuilding:: draw(float scale){
 		    0.6, 0.6, 0.6);
 }
 
-WeakBuilding::WeakBuilding(){
-   clicks = 0;
+void StrongBuilding::reduceHealth(int damage){
+   buildingHealth -= damage;
+}
+
+WeakBuilding::WeakBuilding(){ 
+   buildingHealth = 1;
 }
 
 void WeakBuilding::draw(float scale){
    drawCylinderBuilding(scale);
 }
 
+void WeakBuilding::reduceHealth(int damage){
+   buildingHealth -= damage;
+}
+
 UnbreakableBuilding::UnbreakableBuilding(){
-   clicks = 0;
+   buildingHealth = -1;
    quad = gluNewQuadric();
 }
 
 void UnbreakableBuilding::draw(float scale){
    drawPyramidBuilding(scale, 0.75, 0.75, 0.5);
+}
+
+void UnbreakableBuilding::reduceHealth(int damage){
+   //buildingHealth -= damage;
 }
 
 void Building::drawCube(float xScale, float yScale, float zScale,
@@ -236,3 +248,5 @@ void Building::drawCylinderBuilding(float scale){
    gluDisk(quad, scale*radiusScalar, scale*radiusScalar, 5, 5);
    glPopMatrix();
 }
+
+
