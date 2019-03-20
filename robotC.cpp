@@ -28,7 +28,7 @@ void Robot::draw(float scale){
    glMatrixMode(GL_MODELVIEW);
    headScale = scale; 
    glPushMatrix();
-   //glRotatef(90, 0, 1, 0); //For debugging only
+   glRotatef(180, 0, 1, 0);
    glTranslatef(0, robotOffset, 0);
    drawAndRotateHead();
    drawBody();
@@ -79,12 +79,12 @@ void Robot::drawHead(){
    drawEyes();
    drawAntenna();
    // square on back of head for identification
-   glBegin(GL_POLYGON);
+   glBegin(GL_QUADS);
    glColor3f(0.5, 0.5, 1.0);
-   glVertex3f(backHeadScale, -backHeadScale, -headScale-0.1);
-   glVertex3f(backHeadScale, backHeadScale, -headScale-0.1);
-   glVertex3f(-backHeadScale, backHeadScale,-headScale-0.1);
-   glVertex3f(-backHeadScale, -backHeadScale, -headScale-0.1);
+   glVertex3f(-backHeadScale, -backHeadScale, -headScale-0.01);
+   glVertex3f(-backHeadScale, backHeadScale,-headScale-0.01);
+   glVertex3f(backHeadScale, backHeadScale, -headScale-0.01);
+   glVertex3f(backHeadScale, -backHeadScale, -headScale-0.01);
    glEnd();
    glPopMatrix();
 }
@@ -117,16 +117,16 @@ void Robot::drawAntenna(){
    glPushMatrix();
    rotateAntenna();
    glTranslatef(antX, antY, antZ);
-   glRotatef(antRotation, 1.0, 0 ,0.0);
+   glRotatef(antRotation, 1.0, 0 ,0.0);//Setting it in right position
    glColor3f(0.6,0.1,0.3); //Purple
-   gluCylinder(antQuad, antRadius, 0.05, antHeight, 10, 10); //Cone Shaped
+   gluCylinder(antQuad, antRadius, 0.05, antHeight, 10, 10); //Cone Shape
    drawCube(0.6*headScale, 0.2*headScale, 0.05*headScale, 0, 0, antHeight);
    glPopMatrix(); 
 }
 
 void Robot::rotateAntenna(){
    //THIS MAY NEED TO BE PER ROBOT MOVEMENT/STEP INSTEAD OF CONSTANT PLEASE CHANGE IT RYAN!!!
-   antAngle += 5 - headRotationAngle;
+   antAngle += 5;
    glTranslatef(antX, antY, antZ);
    glRotatef(antAngle, 0, 1, 0);
    glTranslatef(-antX, -antY, -antZ);
@@ -162,12 +162,13 @@ void Robot::drawBody(){
 void Robot::drawBackTriangles(){
    // triangles on back of body for identification
    float backPolyScale = headScale;
+   float var = 1.51;
    glPushMatrix();
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, bodyHeight/8, -headScale*3.6);
-   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*3.6); 
-   glVertex3f(0, backPolyScale*2, -headScale*3.6);  //Point
+   glVertex3f(backPolyScale, bodyHeight/8, -headScale*var);
+   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*var); 
+   glVertex3f(0, backPolyScale*2, -headScale*var);  //Point
    glEnd();
    glPopMatrix();
 
@@ -175,14 +176,11 @@ void Robot::drawBackTriangles(){
    glTranslatef(0,-bodyHeight/3,0);
    glBegin(GL_POLYGON);
    glColor3f(1.0, 0.1, 0.1);
-   glVertex3f(backPolyScale, bodyHeight/8, -headScale*3.6);
-   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*3.6); 
-   glVertex3f(0, backPolyScale*2, -headScale*3.6);  //Point
+   glVertex3f(backPolyScale, bodyHeight/8, -headScale*var);
+   glVertex3f(-backPolyScale, bodyHeight/8,  -headScale*var); 
+   glVertex3f(0, backPolyScale*2, -headScale*var);  //Point
    glEnd();
-   glPopMatrix();
-  
-
-      
+   glPopMatrix();     
    glEnd();
 }
 

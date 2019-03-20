@@ -31,6 +31,7 @@ class Robot {
    float neckToHeadRatio;
    float headToBodyScalar;
    float bodyHeight;
+   float bodyWidth;
    float neckHeight;
    float headHeight;
    //Angle of head for rotation during initial setup
