@@ -176,7 +176,6 @@ int City::countBuildings() {
 	 for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
 	    if(cityLayout[i][j].buildingsOnBlock[k])
 	       count++;
-	    cout << count<< endl;
 	 }
       }
    }
@@ -185,30 +184,32 @@ int City::countBuildings() {
 
 
 void City::attackBuilding(int index) {
-   if(index <=1600){
-   int count = 1;
-   for(unsigned int i = 0; i < cityLayout.size(); i++) {
-      for(unsigned int j = 0; j < cityLayout[i].size(); j++) {
-	 for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++)
-	 {
-	    //   if(cityLayout[i][j].buildingsOnBlock[k])
-	    //   {
-	    //  cout <<"THIS IS ARR" <<arr[count]<<endl;
-	       if(count == index)
-	       {
-		  //This is need to "destroy" the object given these 3 coords
-		  //however we decide to "destroy" the objects
-		  cout << " BUILDING values for index " << count<<endl;
-		  cout << "[i] " << i <<endl;
-		  cout << "[j] " << j <<endl;
-		  cout << "[k] " << k <<endl;
-		  //return;
+   if(index <= this -> countBuildings()){
+      int count = 0;
+      for(unsigned int i = 0; i < cityLayout.size(); i++) {
+	 for(unsigned int j = 0; j < cityLayout[i].size(); j++) {
+	    for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
+	       if(cityLayout[i][j].buildingsOnBlock[k]) {
+		  count++;
+
+		  if(count == index) {
+		     cityLayout[i][j].buildingsOnBlock[k] -> reduceHealth(1);
+		     if(cityLayout[i][j].buildingsOnBlock[k] -> getBuildingHealth() == 0) {
+			delete cityLayout[i][j].buildingsOnBlock[k];
+			cityLayout[i][j].buildingsOnBlock[k] = nullptr;
+		     }
+		     //This is need to "destroy" the object given these 3 coords
+		     //however we decide to "destroy" the objects
+		     //cout << " BUILDING values for index " << count<<endl;
+		     //cout << "[i] " << i <<endl;
+		     //cout << "[j] " << j <<endl;
+		     //cout << "[k] " << k <<endl;
+		     //return;
 		  
-	       }
-	       //  }
-	       
-	    count++;
+		  }
+	       } 
+	    }
 	 }
       }
-   }}
+   }
 }
