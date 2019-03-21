@@ -27,6 +27,9 @@ class Building {
    GLUquadric *quad;
    int buildingScale;
    int buildingHealth;
+   float redScalar;
+   float reduceScalar;
+   
 };
 
 class StrongBuilding: public Building {
@@ -35,6 +38,8 @@ class StrongBuilding: public Building {
    ~StrongBuilding() {};
    void reduceHealth(int damage);
    void draw(float scale);
+  private:
+   
 };
 
 class WeakBuilding: public Building {
