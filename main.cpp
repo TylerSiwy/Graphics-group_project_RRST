@@ -82,7 +82,7 @@ int main(int argc, char ** argv) {
    //glutReshapeFunc(&Reshape);
    glutMouseFunc(&Mouse);
    glutKeyboardFunc(&Keyboard);
-   glutKeyboardFunc(&myKeyboardUpKey);
+   glutKeyboardUpFunc(&myKeyboardUpKey);
    glutSpecialFunc(&Special);
    glutSpecialUpFunc(&mySpecialUpKey);
    init(argc, argv);
