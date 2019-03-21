@@ -113,11 +113,9 @@ void City::drawCity(double blockSize, GLenum mode) {
 	    // For every building slot on the block
 	    for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
 	       glPushMatrix();
-
-	       // Move to building location
 	       switch(k) {
-		 case 0:
-		    glTranslatef(-blockSize/4, 0, -blockSize/4);
+		  case 0:
+		     glTranslatef(-blockSize/4, 0, -blockSize/4);
 		    break;
 		  case 1:
 		     glTranslatef(blockSize/4, 0, -blockSize/4);
@@ -138,6 +136,7 @@ void City::drawCity(double blockSize, GLenum mode) {
 		  }
 		  
                   // Draw building
+		  ////////////////////////////////////////////
 		  cityLayout[i][j].buildingsOnBlock[k] -> draw(0.40 * blockSize);
 	       }
 	       glPopMatrix();
@@ -177,6 +176,7 @@ int City::countBuildings() {
 	 for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
 	    if(cityLayout[i][j].buildingsOnBlock[k])
 	       count++;
+	    cout << count<< endl;
 	 }
       }
    }
@@ -185,9 +185,30 @@ int City::countBuildings() {
 
 
 void City::attackBuilding(int index) {
-   int i = 0, j = 0, k = 0;
-
-   j = index - index / 4;
-   k = index % 4;
-   //cityLayout[i][j].buildingsOnBlock[k]
+   if(index <=1600){
+   int count = 1;
+   for(unsigned int i = 0; i < cityLayout.size(); i++) {
+      for(unsigned int j = 0; j < cityLayout[i].size(); j++) {
+	 for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++)
+	 {
+	    //   if(cityLayout[i][j].buildingsOnBlock[k])
+	    //   {
+	    //  cout <<"THIS IS ARR" <<arr[count]<<endl;
+	       if(count == index)
+	       {
+		  //This is need to "destroy" the object given these 3 coords
+		  //however we decide to "destroy" the objects
+		  cout << " BUILDING values for index " << count<<endl;
+		  cout << "[i] " << i <<endl;
+		  cout << "[j] " << j <<endl;
+		  cout << "[k] " << k <<endl;
+		  //return;
+		  
+	       }
+	       //  }
+	       
+	    count++;
+	 }
+      }
+   }}
 }
