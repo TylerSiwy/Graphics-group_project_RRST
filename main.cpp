@@ -73,7 +73,7 @@ int main(int argc, char ** argv) {
    glutInit(&argc, argv);
    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
    glutInitWindowSize(WindowWidth, WindowHeight);
-   glutInitWindowPosition (200, 100);
+   glutInitWindowPosition (100, 100);
    WindowID = glutCreateWindow(WindowName);
    glutDisplayFunc(&Display);
    glutIdleFunc(&Idle);
@@ -263,10 +263,10 @@ void Mouse(int button, int state, int x, int y) {
    	glMatrixMode (GL_PROJECTION);
    	glPushMatrix ();
    	glLoadIdentity ();
-		/*  create 5x5 pixel picking region near cursor location	*/
    	gluPickMatrix ((GLdouble) x, (GLdouble) (viewport[3] - y), 
-                  	5.0, 5.0, viewport);
-   	gluOrtho2D (-2.0, 2.0, -2.0, 2.0);
+		       1.0, 1.0, viewport);
+//	gluPerspective(50, 1, 5, 1000);
+//	gluOrtho2D (-200,200,-200,200);	
 	//	drawObjects(GL_SELECT);
 
 	myCity.drawCity(theMasterScale, GL_SELECT);
@@ -289,6 +289,7 @@ void Display() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+//	gluOrtho2D (-200,200,-200,200);
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
 	myCity.drawCity(theMasterScale, GL_RENDER);
@@ -303,21 +304,15 @@ void Display() {
 void processHits (GLint hits, GLuint buffer[], int x, int y)
 {
    int names, *ptr;
-   printf ("hits = %d\n", hits);
-   cout << "--------------------------------------------"<< endl;
+   cout << "--Hit Detection-----------------------------"<< endl;
    cout << "Number of buildings Hit: " << hits << endl;
    
    ptr = (GLint *) buffer; 
-   for (int i = 0; i < hits; i++) {	/*  for each hit  */
-     names = *ptr;
+   for (int i = 0; i < hits; i++) {
+      names = *ptr;
       ptr+=3;
-      for (int j = 0; j < names; j++) { /*  for each name */
-	 //Here we need to send a message with the
-	 //*ptr value to destroy the correct building
-         if(*ptr==1) printf ("red rectangle\n");
-         else cout << "BuildingStack ID num is: " << *ptr << endl;
-	 //this will be called to destroy the buildings
-	 // myCity.attackBuilding(*ptr);
+      for (int j = 0; j < names; j++) {
+	 myCity.attackBuilding(*ptr);
          ptr++;
       }
    }

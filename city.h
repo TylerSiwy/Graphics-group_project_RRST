@@ -22,5 +22,6 @@ class City {
       bool road;
       vector<Building*> buildingsOnBlock;
    };
+   bool arr[1601] = {true};//////////
    vector<vector<zone>> cityLayout;
 };

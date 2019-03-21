@@ -11,6 +11,7 @@ using namespace std;
 class Building {
   public:
    int getBuildingHealth(){return buildingHealth;};
+   virtual ~Building() {};
    virtual void draw(float scale) = 0; 
    virtual void reduceHealth(int damage) = 0;
   protected:
@@ -31,6 +32,7 @@ class Building {
 class StrongBuilding: public Building {
   public:
    StrongBuilding();
+   ~StrongBuilding() {};
    void reduceHealth(int damage);
    void draw(float scale);
 };
@@ -38,6 +40,7 @@ class StrongBuilding: public Building {
 class WeakBuilding: public Building {
   public:
    WeakBuilding();
+   ~WeakBuilding() {};
    void reduceHealth(int damage);
    void draw(float scale);
 };
@@ -45,6 +48,7 @@ class WeakBuilding: public Building {
 class UnbreakableBuilding: public Building {
   public:
    UnbreakableBuilding();
+   ~UnbreakableBuilding() {};
    void reduceHealth(int damage);
    void draw(float scale);
 };
