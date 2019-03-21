@@ -59,15 +59,16 @@ void Display();
 //void Reshape(int width, int height);
 void Mouse(int button, int state, int x, int y);
 void Keyboard(unsigned char key, int x, int y);
+void goodKeyboard(unsigned char key, int x, int y);
 void myKeyboardUpKey(unsigned char key, int x, int y);
 void Idle();
 void Special(int key, int x, int y);
 void mySpecialUpKey(int key, int x, int y);
 void init(int &argc, char ** argv);
+
 void drawBuildings(GLenum mode);
 
 void processHits (GLint hits, GLuint buffer[], int x, int y);
-//////////Rchanges
 
 int main(int argc, char ** argv) {
    //myCity.printLayout();
@@ -201,6 +202,68 @@ void mySpecialUpKey( int key, int x, int y ){
    }
 }
 
+void goodKeyboard(unsigned char key, int x, int y) {
+   if(paused==false){ 
+      switch(key){
+	 // if(paused==false){
+	 cout << key;
+	 case 'w': // z
+	    
+	    switch(robotAngle) {
+	       case 0:
+		  if(myCity.isRoad(robotX + 20, robotZ + 20 - 1)) {
+		     robotZ -= 1;
+		  }
+		  break;
+	       case 90:
+		  if(myCity.isRoad(robotX + 20 - 1, robotZ + 20)) {
+		     robotX -= 1;
+		  }
+		  break;
+	       case 180:
+		  if(myCity.isRoad(robotX + 20, robotZ + 20 + 1)) {
+		     robotZ += 1;
+		  }
+		  break;
+	       case 270:
+		  if(myCity.isRoad(robotX + 20 + 1, robotZ + 20)) {
+		     robotX += 1;
+		  }
+		  break;
+	    }
+
+	    break;
+	 case 'd':
+	    //turn robot right
+	    robotAngle -= 90;
+	    while(robotAngle < 0)
+	       robotAngle += 360;
+	    break;
+	 case 'a':
+	    //turn robot left
+	    robotAngle += 90;
+	    while(robotAngle >= 360)
+	       robotAngle -= 360;
+	    break;
+	 case 'r':
+	    robotZ = robotX = 0;
+	    robotAngle = 0;
+	    //return the robot to the origin if the robot is on the boundary
+	    //do nothing if not on boundary
+	    break;
+	 case '0':
+	    glutKeyboardFunc(&Keyboard);
+	    break;
+	 case 27:
+	    // This closes the program.
+	    exit(0);
+	 default:
+	    printf ("KP: No action for %d.\n", key);
+	    break;
+      }
+   }
+}
+
 void Keyboard(unsigned char key, int x, int y) {
    if(paused==false){ 
       switch(key){
@@ -210,31 +273,25 @@ void Keyboard(unsigned char key, int x, int y) {
 	       case 0:
 		  if(myCity.isRoad(robotX + 20, robotZ + 20 - 1)) {
 		     robotZ -= 1;
-		     eyeZ -= theMasterScale;
 		  }
 		  break;
 	       case 90:
 		  if(myCity.isRoad(robotX + 20 - 1, robotZ + 20)) {
 		     robotX -= 1;
-		     eyeX -= theMasterScale;
 		  }
 		  break;
 	       case 180:
 		  if(myCity.isRoad(robotX + 20, robotZ + 20 + 1)) {
 		     robotZ += 1;
-		     eyeZ += theMasterScale;
 		  }
 		  break;
 	       case 270:
 		  if(myCity.isRoad(robotX + 20 + 1, robotZ + 20)) {
 		     robotX += 1;
-		     eyeX += theMasterScale;
 		  }
 		  break;
 	    }
 
-	    atX = robotX * theMasterScale;
-	    atZ = robotZ * theMasterScale;
 	    break;
 	 case 'a':
 	    //turn robot right
@@ -254,6 +311,12 @@ void Keyboard(unsigned char key, int x, int y) {
 	    //return the robot to the origin if the robot is on the boundary
 	    //do nothing if not on boundary
 	    break;
+	    case '0':
+	    glutKeyboardFunc(&goodKeyboard);
+	    break;
+	 case 27:
+	    // This closes the program.
+	    exit(0);
 	 default:
 	    printf ("KP: No action for %d.\n", key);
 	    break;
@@ -306,8 +369,13 @@ void Mouse(int button, int state, int x, int y) {
 //	gluOrtho2D (-200,200,-200,200);	
 	//	drawObjects(GL_SELECT);
 
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glRotatef(-robotAngle, 0, 1, 0);
+	glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
 	myCity.drawCity(theMasterScale, GL_SELECT);
-
+	glPopMatrix();
+	
    	glMatrixMode (GL_PROJECTION);
    	glPopMatrix ();
    	glFlush ();
@@ -329,18 +397,20 @@ void Display() {
 //	gluOrtho2D (-200,200,-200,200);
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
-	myCity.drawCity(theMasterScale, GL_RENDER);
+	
 
 
 	glPushMatrix();
 
-	glTranslatef(robotX * theMasterScale, 0, robotZ * theMasterScale);
-	glRotatef(robotAngle, 0, 1, 0);
-	t1000.draw(1);
+	
+	glRotatef(-robotAngle, 0, 1, 0);
+	glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
+	myCity.drawCity(theMasterScale, GL_RENDER);
 
 	glPopMatrix();
 
-
+	t1000.draw(1);
+	
 	glutSwapBuffers();
 	/////////R changes
 	//glFlush();
