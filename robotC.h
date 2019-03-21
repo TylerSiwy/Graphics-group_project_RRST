@@ -13,7 +13,7 @@ class Robot {
   public:
    Robot();
    void setHeadRotationAngle(float newAngle);
-   void smoothRotate(float angle); // Smoothly rotates the robot's head
+   int smoothRotate(float angle); // Smoothly rotates the robot's head
    void draw(float scale); //Draws all compenents of the robot
   protected:
    //All other components should be dynamically sized from headScale

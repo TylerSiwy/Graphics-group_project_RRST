@@ -14,8 +14,7 @@ Robot::Robot(){
    eyeQuad = gluNewQuadric();
    neckToHeadRatio = 0.70;
    rotate_cube = 0;
-   //For smooth rotation
-   currentAngle = 0;
+               //currentAngle = 0;   //For smooth rotation
    headToBodyScalar = 2;
    neckHeight = headScale/4;
    bodyHeight = headScale * 2.25;
@@ -34,28 +33,40 @@ void Robot::draw(float scale){
    drawBody();
    glPopMatrix();
 }
-
+/*
 // Smoothly rotates the robot's head to left or right. Where angle
 // is the max angle to rotate to.
-void Robot::smoothRotate(float angle){
+int Robot::smoothRotate(float angle){
    if(angle > 0){
-      currentAngle += 10;
-      if(currentAngle > angle)
-	 currentAngle = angle;
-      //rotateRight = true;
+      cout << "Right rotation, angle: " << angle << endl;
+      if(currentAngle <= angle){
+	 currentAngle+=5;
+	 cout << "Current R rotation, angle: " << currentAngle << endl;
+      }
+      return currentAngle;
    }
    if(angle < 0){
-      currentAngle -= 10;
-      if(currentAngle < angle)
-	 currentAngle = angle;
-      //rotateLeft = true;
+     cout << "Left rotation, angle: " << angle << endl;
+     if(currentAngle <= angle){
+     currentAngle--;
+     cout << "Current L rotation, angle: " << currentAngle << endl;
+     }
+     return currentAngle;
+     }
+   if(angle == 0){
+      cout << "Default" << endl;
+      if(currentAngle >= 0)
+	 currentAngle -= 5;
+      return currentAngle;
    }
-}
+   
+   return 0;
+   }*/
 
 void Robot::drawAndRotateHead(){
    glPushMatrix();
    glRotatef(headRotationAngle, 0, 1, 0);
-   //glRotatef(smoothRotate(headRotationAngle), 0, 1, 0);
+            //glRotatef(smoothRotate(headRotationAngle), 0, 1, 0);
    drawHead();
    glPopMatrix();
 }
@@ -82,9 +93,9 @@ void Robot::drawHead(){
    glBegin(GL_QUADS);
    glColor3f(0.5, 0.5, 1.0);
    glVertex3f(-backHeadScale, -backHeadScale, -headScale-0.01);
-   glVertex3f(-backHeadScale, backHeadScale,-headScale-0.01);
-   glVertex3f(backHeadScale, backHeadScale, -headScale-0.01);
-   glVertex3f(backHeadScale, -backHeadScale, -headScale-0.01);
+   glVertex3f(-backHeadScale,  backHeadScale, -headScale-0.01);
+   glVertex3f( backHeadScale,  backHeadScale, -headScale-0.01);
+   glVertex3f( backHeadScale, -backHeadScale, -headScale-0.01);
    glEnd();
    glPopMatrix();
 }
