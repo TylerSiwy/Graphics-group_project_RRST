@@ -243,8 +243,9 @@ void Building::drawCylinderBuilding(float scale){
    glPopMatrix();
    
    glPushMatrix();
-   //glRotatef(180, 1, 0, 0);
-   glTranslatef(4, height, 0);
-   gluDisk(quad, scale*radiusScalar, scale*radiusScalar, 5, 5);
+   glColor3f(0.44*1.1, 0.26*1.1, 0.03*1.1);
+   glTranslatef(0, height, 0);
+   glRotatef(-90, 1, 0, 0);
+   gluDisk(quad, 0, scale*radiusScalar, 20, 20); //The disk on 
    glPopMatrix();
 }
