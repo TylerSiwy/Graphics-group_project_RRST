@@ -6,6 +6,8 @@ using namespace std;
 StrongBuilding::StrongBuilding(){
    quad = gluNewQuadric();
    buildingHealth = 3;
+   redScalar = 1.1;
+   reduceScalar = 1.0;
 }
 
 void StrongBuilding:: draw(float scale){
@@ -16,6 +18,8 @@ void StrongBuilding:: draw(float scale){
 
 void StrongBuilding::reduceHealth(int damage){
    buildingHealth -= damage;
+   redScalar *= 1.15;
+   reduceScalar *= 0.5;
 }
 
 WeakBuilding::WeakBuilding(){ 
@@ -28,6 +32,7 @@ void WeakBuilding::draw(float scale){
 
 void WeakBuilding::reduceHealth(int damage){
    buildingHealth -= damage;
+   
 }
 
 UnbreakableBuilding::UnbreakableBuilding(){
@@ -40,7 +45,7 @@ void UnbreakableBuilding::draw(float scale){
 }
 
 void UnbreakableBuilding::reduceHealth(int damage){
-   //buildingHealth -= damage;
+   buildingHealth -= damage;
 }
 
 void Building::drawCube(float xScale, float yScale, float zScale,
@@ -120,25 +125,22 @@ void Building::drawRectBuilding(float xScale, float yScale, float zScale,
      centerpoint and we want it to be to the scale provided, not twice as large.
      We could probably find a better solution later. */
    xScale = xScale / 2;
-   //yScale = yScale / 2;
    zScale = zScale / 2;
+
    //FRONT
    glBegin(GL_POLYGON);
    //glColor3f(1.0f, 0.0f, 0.0f);     // Red
-   glColor3f(buildingR, buildingG, buildingB);
+   glColor3f(buildingR*redScalar, buildingG*reduceScalar, buildingB*reduceScalar);
    glVertex3f(-xScale, yScale, -zScale);
    glVertex3f(xScale, yScale, -zScale);
    glVertex3f(xScale, 0, -zScale); 
    glVertex3f(-xScale, 0, -zScale); 
-
-
-
    glEnd();
  
    //BACK
    glBegin(GL_POLYGON);
    //glColor3f(0.0f, 0.0f, 1.0f);     // Blue
-   glColor3f(buildingR, buildingG, buildingB);  
+   glColor3f(buildingR*redScalar, buildingG*reduceScalar, buildingB*reduceScalar);
    glVertex3f(-xScale, 0, zScale);
    glVertex3f(xScale, 0, zScale);
    glVertex3f(xScale, yScale, zScale);
@@ -148,7 +150,7 @@ void Building::drawRectBuilding(float xScale, float yScale, float zScale,
    //RIGHT
    glBegin(GL_POLYGON);
    //glColor3f(0.0f, 1.0f, 0.0f);     // Green
-   glColor3f(buildingR*0.90, buildingG*0.90, buildingB*0.90);
+   glColor3f(buildingR*0.90*redScalar, buildingG*0.90*reduceScalar, buildingB*0.90*reduceScalar);
    glVertex3f( xScale, 0, -zScale);
    glVertex3f( xScale, yScale, -zScale);
    glVertex3f( xScale, yScale, zScale);
@@ -158,7 +160,7 @@ void Building::drawRectBuilding(float xScale, float yScale, float zScale,
    //LEFT
    glBegin(GL_POLYGON);
    //glColor3f(1.0f, 0.0f, 1.0f);       // Purple
-   glColor3f(buildingR*0.5, buildingG*0.5, buildingB*0.5);
+   glColor3f(buildingR*0.5*redScalar, buildingG*0.5*reduceScalar, buildingB*0.5*reduceScalar);
    glVertex3f(-xScale, 0, zScale);
    glVertex3f(-xScale, yScale, zScale);
    glVertex3f(-xScale, yScale, -zScale);
@@ -167,7 +169,7 @@ void Building::drawRectBuilding(float xScale, float yScale, float zScale,
  
    //TOP
    glBegin(GL_POLYGON);
-   glColor3f(buildingR*1.1, buildingG*1.1, buildingB*1.1);
+   glColor3f(buildingR*1.1*redScalar, buildingG*1.1*reduceScalar, buildingB*1.1*reduceScalar);
    glVertex3f(xScale, yScale, zScale);
    glVertex3f(xScale, yScale, -zScale);
    glVertex3f(-xScale, yScale, -zScale);
