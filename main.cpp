@@ -50,8 +50,9 @@ Robot t1000;
 float theMasterScale = 10;
 
 // Robot Location
-float robotX = 0;
-float robotZ = 0;
+int robotX = 0;
+int robotZ = 0;
+int robotAngle = 0;
 
 // Callback Functions
 void Display();
@@ -204,16 +205,52 @@ void Keyboard(unsigned char key, int x, int y) {
    if(paused==false){ 
       switch(key){
 	 case 'z': // z
-	    robotZ += theMasterScale;//This will now move the robot forward
+	    
+	    switch(robotAngle) {
+	       case 0:
+		  if(myCity.isRoad(robotX + 20, robotZ + 20 - 1)) {
+		     robotZ -= 1;
+		     eyeZ -= theMasterScale;
+		  }
+		  break;
+	       case 90:
+		  if(myCity.isRoad(robotX + 20 - 1, robotZ + 20)) {
+		     robotX -= 1;
+		     eyeX -= theMasterScale;
+		  }
+		  break;
+	       case 180:
+		  if(myCity.isRoad(robotX + 20, robotZ + 20 + 1)) {
+		     robotZ += 1;
+		     eyeZ += theMasterScale;
+		  }
+		  break;
+	       case 270:
+		  if(myCity.isRoad(robotX + 20 + 1, robotZ + 20)) {
+		     robotX += 1;
+		     eyeX += theMasterScale;
+		  }
+		  break;
+	    }
+
+	    atX = robotX * theMasterScale;
+	    atZ = robotZ * theMasterScale;
 	    break;
 	 case 'a':
 	    //turn robot right
+	    robotAngle -= 90;
+	    while(robotAngle < 0)
+	       robotAngle += 360;
 	    break;
 	 case 'q':
 	    //turn robot left
+	    robotAngle += 90;
+	    while(robotAngle >= 360)
+	       robotAngle -= 360;
 	    break;
 	 case 'r':
 	    robotZ = robotX = 0;
+	    robotAngle = 0;
 	    //return the robot to the origin if the robot is on the boundary
 	    //do nothing if not on boundary
 	    break;
@@ -286,14 +323,24 @@ void Mouse(int button, int state, int x, int y) {
 
 void Display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 //	gluOrtho2D (-200,200,-200,200);
 	gluPerspective(50, 1, 5, 1000);
 	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
 	myCity.drawCity(theMasterScale, GL_RENDER);
+
+
+	glPushMatrix();
+
+	glTranslatef(robotX * theMasterScale, 0, robotZ * theMasterScale);
+	glRotatef(robotAngle, 0, 1, 0);
 	t1000.draw(1);
+
+	glPopMatrix();
+
+
 	glutSwapBuffers();
 	/////////R changes
 	//glFlush();
