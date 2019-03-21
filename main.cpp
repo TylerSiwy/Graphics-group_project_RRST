@@ -195,24 +195,33 @@ void Keyboard(unsigned char key, int x, int y) {
 	    
 	    switch(robotAngle) {
 	       case 0:
-		  if(myCity.isRoad(robotX + 20, robotZ + 20 - 1))
+		  if(myCity.isRoad(robotX + 20, robotZ + 20 - 1)) {
 		     robotZ -= 1;
+		     eyeZ -= theMasterScale;
+		  }
 		  break;
 	       case 90:
-		  if(myCity.isRoad(robotX + 20 - 1, robotZ + 20))
+		  if(myCity.isRoad(robotX + 20 - 1, robotZ + 20)) {
 		     robotX -= 1;
+		     eyeX -= theMasterScale;
+		  }
 		  break;
 	       case 180:
-		  if(myCity.isRoad(robotX + 20, robotZ + 20 + 1))
+		  if(myCity.isRoad(robotX + 20, robotZ + 20 + 1)) {
 		     robotZ += 1;
+		     eyeZ += theMasterScale;
+		  }
 		  break;
 	       case 270:
-		  if(myCity.isRoad(robotX + 20 + 1, robotZ + 20))
+		  if(myCity.isRoad(robotX + 20 + 1, robotZ + 20)) {
 		     robotX += 1;
+		     eyeX += theMasterScale;
+		  }
 		  break;
 	    }
 
-	       
+	    atX = robotX * theMasterScale;
+	    atZ = robotZ * theMasterScale;
 	    break;
 	 case 'a':
 	    //turn robot right
