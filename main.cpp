@@ -33,8 +33,6 @@ static bool paused=false;
 //Angle of head for rotation on button presses
 float headRotationAngle = 0;
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ For special keys ~~~~~~~~~~~~
-
 // LookAt
 double eyeX = 0.0;
 double eyeY = 50.0;
@@ -66,7 +64,9 @@ void Special(int key, int x, int y);
 void mySpecialUpKey(int key, int x, int y);
 void init(int &argc, char ** argv);
 void drawBuildings(GLenum mode);
-void processHits (GLint hits, GLuint buffer[]);
+
+void processHits (GLint hits, GLuint buffer[], int x, int y);
+//////////Rchanges
 
 int main(int argc, char ** argv) {
    //myCity.printLayout();
@@ -89,7 +89,7 @@ int main(int argc, char ** argv) {
 }
 
 void init(int &argc, char ** argv) {
-   cout << myCity.countBuildings();
+   // cout << myCity.countBuildings();
    glClearColor(0.52, 0.80, 0.92, 0.0);
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_CULL_FACE);
@@ -245,7 +245,42 @@ void moveRobot(){
 void Mouse(int button, int state, int x, int y) {
    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
    {
-      printf ("mouseX %d mouseY %d\n",x,y);
+      //  printf ("mouseX %d mouseY %d\n",x,y);
+        GLuint selectBuf[SIZE];
+   GLint hits;
+   GLint viewport[4];
+
+   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
+   {
+   	glGetIntegerv (GL_VIEWPORT, viewport);
+
+   	glSelectBuffer (SIZE, selectBuf);
+   	glRenderMode(GL_SELECT);
+
+   	glInitNames();
+   	glPushName(0);
+
+   	glMatrixMode (GL_PROJECTION);
+   	glPushMatrix ();
+   	glLoadIdentity ();
+		/*  create 5x5 pixel picking region near cursor location	*/
+   	gluPickMatrix ((GLdouble) x, (GLdouble) (viewport[3] - y), 
+                  	5.0, 5.0, viewport);
+   	gluOrtho2D (-2.0, 2.0, -2.0, 2.0);
+	//	drawObjects(GL_SELECT);
+
+	myCity.drawCity(theMasterScale, GL_SELECT);
+
+   	glMatrixMode (GL_PROJECTION);
+   	glPopMatrix ();
+   	glFlush ();
+
+   	hits = glRenderMode (GL_RENDER);//RENDER
+   	processHits (hits, selectBuf,x,y);
+        //This is in zhangs example but breaks
+	//the program when used for our program
+	//	glutPostRedisplay();
+   }
    }
 }
 
@@ -264,35 +299,27 @@ void Display() {
 	/////////R changes
 }
 
-void drawBuildings(GLenum mode)
-{
-   //This will eventually be the total number of buildings
-   int numBuilding=10;
-   //This i needs to start at 1, as 0 on the stack is already defined
-   //This will protect the stack from underflow dumps
-   for(int i=1; i<numBuilding; i++)
-   {
-      if(mode == GL_SELECT)
-	 glLoadName(i);
-      //  the building are created here
-   }
-}
 
-void processHits (GLint hits, GLuint buffer[])
+void processHits (GLint hits, GLuint buffer[], int x, int y)
 {
    int names, *ptr;
    printf ("hits = %d\n", hits);
+   cout << "--------------------------------------------"<< endl;
+   cout << "Number of buildings Hit: " << hits << endl;
+   
    ptr = (GLint *) buffer; 
    for (int i = 0; i < hits; i++) {	/*  for each hit  */
-      names = *ptr;
+     names = *ptr;
       ptr+=3;
       for (int j = 0; j < names; j++) { /*  for each name */
 	 //Here we need to send a message with the
-	 //*ptr value to destroy the correct building  
+	 //*ptr value to destroy the correct building
          if(*ptr==1) printf ("red rectangle\n");
-         else printf ("blue rectangle\n");
+         else cout << "BuildingStack ID num is: " << *ptr << endl;
+	 //this will be called to destroy the buildings
+	 // myCity.attackBuilding(*ptr);
          ptr++;
       }
-      printf ("\n");
    }
+   cout << "END MESSAGE---------------------------------"<< endl;
 }

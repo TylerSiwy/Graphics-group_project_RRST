@@ -182,3 +182,12 @@ int City::countBuildings() {
    }
    return count;
 }
+
+
+void City::attackBuilding(int index) {
+   int i = 0, j = 0, k = 0;
+
+   j = index - index / 4;
+   k = index % 4;
+   //cityLayout[i][j].buildingsOnBlock[k]
+}

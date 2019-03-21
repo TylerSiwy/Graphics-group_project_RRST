@@ -14,6 +14,7 @@ class City {
    void printLayout();
    bool isRoad(unsigned int x, unsigned int z);
    int countBuildings();
+   void attackBuilding(int index);
   private:
    class zone {
      public:
