@@ -35,14 +35,14 @@ float headRotationAngle = 0;
 
 // LookAt
 double eyeX = 0.0;
-double eyeY = 50.0;
-double eyeZ = 50.0;
+double eyeY = 300.0;
+double eyeZ = 0.0;
 double atX = 0.0;
 double atY = 0.0;
 double atZ = 0.0;
 double upX = 0.0;
 double upY = 1.0;
-double upZ = 0.0;
+double upZ = -1.0;
 
 // Objects
 City myCity(20, 20);
@@ -119,7 +119,7 @@ void Special(int key, int x, int y) {
 	    break;
 	 case GLUT_KEY_F4://makes the view go back to the regular view
 	    eyeX = 0;
-	    eyeY = 8;
+	    eyeY = 10;
 	    eyeZ = angleViewDist - 10;
 	    break;
 	 case GLUT_KEY_F5://looks at robot from the BACK LEFT
@@ -163,21 +163,21 @@ void Special(int key, int x, int y) {
 	    eyeZ = -angleViewDist*2;
 	    break;
 	 case GLUT_KEY_DOWN: //Moves camera down
-		eyeZ += 1;
-		atZ += 1;
-		break;
+	    eyeZ += 1;
+	    atZ += 1;
+	    break;
 	 case GLUT_KEY_LEFT: //Moves camera left
-		eyeX -= 1;
-		atX -= 1;
-		break;
+	    eyeX -= 1;
+	    atX -= 1;
+	    break;
 	 case GLUT_KEY_UP: //Moves camera up
-		eyeZ -= 1;
-		atZ -= 1;
-		break;
+	    eyeZ -= 1;
+	    atZ -= 1;
+	    break;
 	 case GLUT_KEY_RIGHT: //Moves camera right
-		eyeX += 1;
-		atX += 1;
-		break;
+	    eyeX += 1;
+	    atX += 1;
+	    break;
 	 default:
 	    printf ("SKP: No action for special key %d.\n", key);
 	    break;
@@ -331,7 +331,6 @@ void myKeyboardUpKey(unsigned char key, int x, int y){
 	 //cout << paused;
 	 break;
       default:
-	 printf ("KP: No action for key %d.\n", key);
 	 break;
    }
    if(key == 27)
@@ -346,75 +345,72 @@ void Mouse(int button, int state, int x, int y) {
    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
    {
       //  printf ("mouseX %d mouseY %d\n",x,y);
-        GLuint selectBuf[SIZE];
-   GLint hits;
-   GLint viewport[4];
+      GLuint selectBuf[SIZE];
+      GLint hits;
+      GLint viewport[4];
 
-   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
-   {
-   	glGetIntegerv (GL_VIEWPORT, viewport);
+      glGetIntegerv (GL_VIEWPORT, viewport);
 
-   	glSelectBuffer (SIZE, selectBuf);
-   	glRenderMode(GL_SELECT);
+      glSelectBuffer (SIZE, selectBuf);
+      glRenderMode(GL_SELECT);
 
-   	glInitNames();
-   	glPushName(0);
+      glInitNames();
+      glPushName(0);
 
-   	glMatrixMode (GL_PROJECTION);
-   	glPushMatrix ();
-   	glLoadIdentity ();
-   	gluPickMatrix ((GLdouble) x, (GLdouble) (viewport[3] - y), 
-		       1.0, 1.0, viewport);
+      glMatrixMode (GL_PROJECTION);
+      glPushMatrix ();
+      glLoadIdentity ();
+      gluPickMatrix ((GLdouble) x, (GLdouble) (viewport[3] - y), 
+		     1.0, 1.0, viewport);
 //	gluPerspective(50, 1, 5, 1000);
-//	gluOrtho2D (-200,200,-200,200);	
-	//	drawObjects(GL_SELECT);
+      //gluOrtho2D (-0.5,0.5,-0.5,0.5);
 
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glRotatef(-robotAngle, 0, 1, 0);
-	glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
-	myCity.drawCity(theMasterScale, GL_SELECT);
-	glPopMatrix();
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
+      glRotatef(-robotAngle, 0, 1, 0);
+      glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
+      myCity.drawCity(theMasterScale, GL_SELECT);
+      glPopMatrix();
 	
-   	glMatrixMode (GL_PROJECTION);
-   	glPopMatrix ();
-   	glFlush ();
+      glMatrixMode (GL_PROJECTION);
+      glPopMatrix ();
+      glFlush ();
 
-   	hits = glRenderMode (GL_RENDER);//RENDER
-   	processHits (hits, selectBuf,x,y);
-        //This is in zhangs example but breaks
-	//the program when used for our program
-	//	glutPostRedisplay();
-   }
+      hits = glRenderMode (GL_RENDER);//RENDER
+      processHits (hits, selectBuf,x,y);
+      //This is in zhangs example but breaks
+      //the program when used for our program
+      //	glutPostRedisplay();
    }
 }
 
+
 void Display() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-//	gluOrtho2D (-200,200,-200,200);
-	gluPerspective(50, 1, 5, 1000);
-	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   //gluOrtho2D (-200,200,-200,200);
+   gluPerspective(50, 1, 5, 1000);
+   gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
 	
 
 
-	glPushMatrix();
+   glPushMatrix();
 
 	
-	glRotatef(-robotAngle, 0, 1, 0);
-	glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
-	myCity.drawCity(theMasterScale, GL_RENDER);
+   glRotatef(-robotAngle, 0, 1, 0);
+   glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
+   myCity.drawCity(theMasterScale, GL_RENDER);
 
-	glPopMatrix();
+   glPopMatrix();
 
-	t1000.draw(1);
+   t1000.draw(1);
 	
-	glutSwapBuffers();
-	/////////R changes
-	//glFlush();
-	/////////R changes
+   glutSwapBuffers();
+   /////////R changes
+   glFlush();
+   /////////R changes
 }
 
 

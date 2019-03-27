@@ -21,7 +21,7 @@ City::zone::zone(bool isRoad) {
    road = isRoad;
    if(!isRoad) {
       for(int i = 0; i < 4; i++) {
-	 switch(rand() % 3) {
+	 switch(2) {
 	    case 0:
 	       buildingsOnBlock.push_back(new UnbreakableBuilding);
 	       break;
@@ -65,7 +65,7 @@ City::City(int xSize, int zSize) {
 }
 
 void City::drawCity(double blockSize, GLenum mode) {
-   int buildingsDrawn = 0;
+   int buildingsDrawn = 1;
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    // Centre city on (0,0)
@@ -84,13 +84,15 @@ void City::drawCity(double blockSize, GLenum mode) {
 	    glTranslatef(blockSize * j, 0, blockSize * i);
 
             // Draw road
-	    glBegin(GL_QUADS);
-	    glColor3f(0.1, 0.1, 0.1);
-	    glVertex3f(blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, blockSize / 2);
-	    glVertex3f(blockSize / 2, 0, blockSize / 2);
-	    glEnd();
+	    if(mode == GL_RENDER) {
+	       glBegin(GL_QUADS);
+	       glColor3f(0.1, 0.1, 0.1);
+	       glVertex3f(blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, blockSize / 2);
+	       glVertex3f(blockSize / 2, 0, blockSize / 2);
+	       glEnd();
+	    }
 	    glPopMatrix();
 	 }
 
@@ -102,14 +104,15 @@ void City::drawCity(double blockSize, GLenum mode) {
 	    glTranslatef(blockSize * j, 0, blockSize * i);
 
 	    // Draw grass under building space
-	    glBegin(GL_QUADS);
-	    glColor3f(0.376, 0.502, 0.22);
-	    glVertex3f(blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, blockSize / 2);
-	    glVertex3f(blockSize / 2, 0, blockSize / 2);
-	    glEnd();
-
+	    if(mode == GL_RENDER) {
+	       glBegin(GL_QUADS);
+	       glColor3f(0.376, 0.502, 0.22);
+	       glVertex3f(blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, blockSize / 2);
+	       glVertex3f(blockSize / 2, 0, blockSize / 2);
+	       glEnd();
+	    }
 	    // For every building slot on the block
 	    for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
 	       glPushMatrix();
@@ -131,8 +134,7 @@ void City::drawCity(double blockSize, GLenum mode) {
 
 		  // For building selection
 		  if(mode == GL_SELECT) {
-		     buildingsDrawn++;
-		     glLoadName(buildingsDrawn);
+		     glLoadName(buildingsDrawn++);
 		  }
 		  
                   // Draw building
