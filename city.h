@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "buildings.h"
+#include "buildings.h" 
 using namespace std;
 
 class City {
@@ -14,7 +14,9 @@ class City {
    void printLayout();
    bool isRoad(unsigned int x, unsigned int z);
    int countBuildings();
-   void attackBuilding(int index);
+   void countIndex(int index, int &x,int &z, int &l);
+   //void attackBuilding(int index);
+   void attackBuilding(int x, int z, int l);
   private:
    class zone {
      public:

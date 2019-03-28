@@ -21,7 +21,7 @@ Robot::Robot(){
    robotOffset = 0;
 }
 
-void Robot::draw(float scale){
+void Robot::draw(float scale,bool paused){
    robotOffset = headScale + neckToHeadRatio*headScale + bodyHeight; 
    headHeight = headScale * 2;
    glMatrixMode(GL_MODELVIEW);
@@ -29,7 +29,7 @@ void Robot::draw(float scale){
    glPushMatrix();
    glRotatef(180, 0, 1, 0);
    glTranslatef(0, robotOffset, 0);
-   drawAndRotateHead();
+   drawAndRotateHead(paused);
    drawBody();
    glPopMatrix();
 }
@@ -63,11 +63,11 @@ int Robot::smoothRotate(float angle){
    return 0;
    }*/
 
-void Robot::drawAndRotateHead(){
+void Robot::drawAndRotateHead(bool paused){
    glPushMatrix();
    glRotatef(headRotationAngle, 0, 1, 0);
             //glRotatef(smoothRotate(headRotationAngle), 0, 1, 0);
-   drawHead();
+   drawHead(paused);
    glPopMatrix();
 }
 
@@ -79,7 +79,7 @@ float Robot::getHeadRotationAngle(){
    return headRotationAngle;
 }
 
-void Robot::drawHead(){
+void Robot::drawHead(bool paused){
    float backHeadScale = headScale * 0.55; //used for the square on back of head
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
@@ -88,7 +88,7 @@ void Robot::drawHead(){
    drawCube(headScale, headScale, headScale, 0, 0, 0);
    drawNeck();
    drawEyes();
-   drawAntenna();
+   drawAntenna(paused);
    // square on back of head for identification
    glBegin(GL_QUADS);
    glColor3f(0.5, 0.5, 1.0);
@@ -119,14 +119,15 @@ void Robot::drawEyes(){
    glPopMatrix();
 }
 
-void Robot::drawAntenna(){
+void Robot::drawAntenna(bool paused){
    antY=headScale;
    float antRadius = 0.15;
    float antHeight = 0.75*headScale;
    float antRotation = 270;
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
-   rotateAntenna();
+ 
+      rotateAntenna(paused);
    glTranslatef(antX, antY, antZ);
    glRotatef(antRotation, 1.0, 0 ,0.0);//Setting it in right position
    glColor3f(0.6,0.1,0.3); //Purple
@@ -135,9 +136,15 @@ void Robot::drawAntenna(){
    glPopMatrix(); 
 }
 
-void Robot::rotateAntenna(){
+void Robot::rotateAntenna(bool paused){
    //THIS MAY NEED TO BE PER ROBOT MOVEMENT/STEP INSTEAD OF CONSTANT PLEASE CHANGE IT RYAN!!!
-   antAngle += 5;
+   if(paused==false){
+     antAngle += 5; 
+   }
+   else{
+antAngle += 0;
+   }
+//   antAngle += 5;
    glTranslatef(antX, antY, antZ);
    glRotatef(antAngle, 0, 1, 0);
    glTranslatef(-antX, -antY, -antZ);
