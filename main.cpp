@@ -68,7 +68,7 @@ void init(int &argc, char ** argv);
 
 void drawBuildings(GLenum mode);
 
-void processHits (GLint hits, GLuint buffer[], int x, int y);
+void processHits (GLint hits, GLuint buffer[]);
 
 int main(int argc, char ** argv) {
    //myCity.printLayout();
@@ -388,7 +388,7 @@ void Mouse(int button, int state, int x, int y) {
 	    glFlush ();
 
 	    hits = glRenderMode (GL_RENDER);//RENDER
-	    processHits (hits, selectBuf,x,y);
+	    processHits (hits, selectBuf);
 	    //This is in zhangs example but breaks
 	    //the program when used for our program
 	    //	glutPostRedisplay();
@@ -427,7 +427,7 @@ void Display() {
 }
 
 
-void processHits (GLint hits, GLuint buffer[], int puke, int lemon)
+void processHits (GLint hits, GLuint buffer[])
 {
    if(hits>=1){
    int x,z,l;
