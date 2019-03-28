@@ -15,7 +15,7 @@ using namespace std;
 // Window Options
 int WindowWidth = 700;
 int WindowHeight = 700;
-const char* WindowName = "Rylan Bueckert";
+const char* WindowName = "Robust Robot Rampaging Rudely";
 
 int WindowID;
 
@@ -23,8 +23,8 @@ int WindowID;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ For special keys ~~~~~~~~~~~~
 float angleViewDist=30;
 //Determines if game is paused or not
-static bool paused=false;
-
+bool paused=false;
+bool canShoot=true;
 //Lookat Vars
 //float eyeX = 0;
 //float eyeY = 0;
@@ -35,10 +35,10 @@ float headRotationAngle = 0;
 
 // LookAt
 double eyeX = 0.0;
-double eyeY = 50.0;
-double eyeZ = 50.0;
+double eyeY = 10.0;
+double eyeZ = angleViewDist-10;
 double atX = 0.0;
-double atY = 0.0;
+double atY = 5.0;
 double atZ = 0.0;
 double upX = 0.0;
 double upY = 1.0;
@@ -68,7 +68,7 @@ void init(int &argc, char ** argv);
 
 void drawBuildings(GLenum mode);
 
-void processHits (GLint hits, GLuint buffer[], int x, int y);
+void processHits (GLint hits, GLuint buffer[]);
 
 int main(int argc, char ** argv) {
    //myCity.printLayout();
@@ -118,66 +118,75 @@ void Special(int key, int x, int y) {
 	              //t1000.smoothRotate(headRotationAngle);
 	    break;
 	 case GLUT_KEY_F4://makes the view go back to the regular view
+	    canShoot=true;
 	    eyeX = 0;
-	    eyeY = 8;
+	    eyeY = 10;
 	    eyeZ = angleViewDist - 10;
 	    break;
 	 case GLUT_KEY_F5://looks at robot from the BACK LEFT
+	    canShoot=false;
 	    eyeX = angleViewDist;
 	    eyeY = angleViewDist;
 	    eyeZ = angleViewDist;
 	    break;
 	 case GLUT_KEY_F6://looks at robot from the BACK RIGHT
+	    canShoot=false;
 	    eyeX = -angleViewDist;
 	    eyeY =  angleViewDist;
 	    eyeZ =  angleViewDist;
 	    break;
 	 case GLUT_KEY_F7://looks at robot from the FRONT RIGHT
+	    canShoot=false;
 	    eyeX = -angleViewDist;
 	    eyeY =  angleViewDist;
 	    eyeZ = -angleViewDist;
 	    break;
 	 case GLUT_KEY_F8://looks at robot from the FRONT LEFT
+	    canShoot=false;
 	    eyeX =  angleViewDist;
 	    eyeY =  angleViewDist;
 	    eyeZ = -angleViewDist;
 	    break;
 	 case GLUT_KEY_F9://looks at robot from the BACK LEFT at GREATER dist
+	    canShoot=false;
 	    eyeX = angleViewDist*2;
 	    eyeY = angleViewDist*2;
 	    eyeZ = angleViewDist*2;
 	    break;
 	 case GLUT_KEY_F10://looks at robot from the BACK RIGHT at GREATER dist
+	    canShoot=false;
 	    eyeX = -angleViewDist*2;
 	    eyeY =  angleViewDist*2;
 	    eyeZ =  angleViewDist*2;
 	    break;
 	 case GLUT_KEY_F11://looks at robot from the FRONT RIGHT at GREATER dist
+	    canShoot=false;
 	    eyeX = -angleViewDist*2;
 	    eyeY =  angleViewDist*2;
 	    eyeZ = -angleViewDist*2;
 	    break;
 	 case GLUT_KEY_F12://looks at robot from the FRONT LEFT at GREATER dist
+	    canShoot=false;
 	    eyeX =  angleViewDist*2;
 	    eyeY =  angleViewDist*2;
 	    eyeZ = -angleViewDist*2;
 	    break;
 	 case GLUT_KEY_DOWN: //Moves camera down
-		eyeZ += 1;
-		atZ += 1;
-		break;
+	    eyeZ += 1;
+	    atZ += 1;
+	    break;
 	 case GLUT_KEY_LEFT: //Moves camera left
-		eyeX -= 1;
-		atX -= 1;
-		break;
+	    eyeX -= 1;
+	    atX -= 1;
+	    break;
 	 case GLUT_KEY_UP: //Moves camera up
-		eyeZ -= 1;
-		atZ -= 1;
-		break;
+	    eyeZ -= 1;
+	    atZ -= 1;
+	    break;
 	 case GLUT_KEY_RIGHT: //Moves camera right
-		eyeX += 1;
-		atX += 1;
-		break;
+	    eyeX += 1;
+	    atX += 1;
+	    break;
 	 default:
 	    printf ("SKP: No action for special key %d.\n", key);
 	    break;
@@ -331,7 +340,6 @@ void myKeyboardUpKey(unsigned char key, int x, int y){
 	 //cout << paused;
 	 break;
       default:
-	 printf ("KP: No action for key %d.\n", key);
 	 break;
    }
    if(key == 27)
@@ -343,95 +351,116 @@ void moveRobot(){
 }
 
 void Mouse(int button, int state, int x, int y) {
-   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
-   {
-      //  printf ("mouseX %d mouseY %d\n",x,y);
-        GLuint selectBuf[SIZE];
-   GLint hits;
-   GLint viewport[4];
+   if(paused==false){
+      if(canShoot==true){
+	 if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
+	 {
+	    //  printf ("mouseX %d mouseY %d\n",x,y);
+	    GLuint selectBuf[SIZE];
+	    GLint hits;
+	    GLint viewport[4];
 
-   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
-   {
-   	glGetIntegerv (GL_VIEWPORT, viewport);
+	    glGetIntegerv (GL_VIEWPORT, viewport);
 
-   	glSelectBuffer (SIZE, selectBuf);
-   	glRenderMode(GL_SELECT);
+	    glSelectBuffer (SIZE, selectBuf);
+	    glRenderMode(GL_SELECT);
 
-   	glInitNames();
-   	glPushName(0);
+	    glInitNames();
+	    glPushName(0);
 
-   	glMatrixMode (GL_PROJECTION);
-   	glPushMatrix ();
-   	glLoadIdentity ();
-   	gluPickMatrix ((GLdouble) x, (GLdouble) (viewport[3] - y), 
-		       1.0, 1.0, viewport);
+	    glMatrixMode (GL_PROJECTION);
+	    glPushMatrix ();
+	    glLoadIdentity ();
+	    gluPickMatrix ((GLdouble) x, (GLdouble) (viewport[3] - y), 
+			   0.1, 0.1, viewport);
 //	gluPerspective(50, 1, 5, 1000);
-//	gluOrtho2D (-200,200,-200,200);	
-	//	drawObjects(GL_SELECT);
+	    //gluOrtho2D (-0.5,0.5,-0.5,0.5);
 
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glRotatef(-robotAngle, 0, 1, 0);
-	glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
-	myCity.drawCity(theMasterScale, GL_SELECT);
-	glPopMatrix();
+	    glMatrixMode(GL_MODELVIEW);
+	    glPushMatrix();
+	    glRotatef(-robotAngle, 0, 1, 0);
+	    glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
+	    myCity.drawCity(theMasterScale, GL_SELECT);
+	    glPopMatrix();
 	
-   	glMatrixMode (GL_PROJECTION);
-   	glPopMatrix ();
-   	glFlush ();
+	    glMatrixMode (GL_PROJECTION);
+	    glPopMatrix ();
+	    glFlush ();
 
-   	hits = glRenderMode (GL_RENDER);//RENDER
-   	processHits (hits, selectBuf,x,y);
-        //This is in zhangs example but breaks
-	//the program when used for our program
-	//	glutPostRedisplay();
-   }
+	    hits = glRenderMode (GL_RENDER);//RENDER
+	    processHits (hits, selectBuf);
+	    //This is in zhangs example but breaks
+	    //the program when used for our program
+	    //	glutPostRedisplay();
+	 }
+      }
    }
 }
+
 
 void Display() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-//	gluOrtho2D (-200,200,-200,200);
-	gluPerspective(50, 1, 5, 1000);
-	gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   //gluOrtho2D (-200,200,-200,200);
+   gluPerspective(50, 1, 5, 1000);
+   gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
 	
 
 
-	glPushMatrix();
+   glPushMatrix();
 
 	
-	glRotatef(-robotAngle, 0, 1, 0);
-	glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
-	myCity.drawCity(theMasterScale, GL_RENDER);
+   glRotatef(-robotAngle, 0, 1, 0);
+   glTranslatef(-robotX * theMasterScale, 0, -robotZ * theMasterScale);
+   myCity.drawCity(theMasterScale, GL_RENDER);
 
-	glPopMatrix();
-
-	t1000.draw(1);
+   glPopMatrix();
+      t1000.draw(1,paused);
+   
 	
-	glutSwapBuffers();
-	/////////R changes
-	//glFlush();
-	/////////R changes
+   glutSwapBuffers();
+   /////////R changes
+   glFlush();
+   /////////R changes
 }
 
 
-void processHits (GLint hits, GLuint buffer[], int x, int y)
+void processHits (GLint hits, GLuint buffer[])
 {
+   if(hits>=1){
+   int x,z,l;
+   float min_dist = 2000;
+   int xF,zF,lF;
    int names, *ptr;
-   cout << "--Hit Detection-----------------------------"<< endl;
-   cout << "Number of buildings Hit: " << hits << endl;
-   
+   int ROffSetX=robotX+20;
+   int ROffSetZ=robotZ+20;
    ptr = (GLint *) buffer; 
    for (int i = 0; i < hits; i++) {
       names = *ptr;
       ptr+=3;
       for (int j = 0; j < names; j++) {
-	 myCity.attackBuilding(*ptr);
+	 myCity.countIndex(*ptr, x,z,l);
+
+	 float offset_x = 10/4;
+	 float offset_z = 10/4;
+	 offset_x *= l==0 || l==3 ? -1 : 1;
+	 offset_z *= l==0 || l==1 ? -1 : 1;
+	 float robLoc[] = {float(10*ROffSetZ)+5, float(10*ROffSetX) +5};
+	 float buildLoc[] = {float(10*x)+5+offset_z, float(10*z) +5+offset_x};
+	 float diff = sqrt(pow(abs(robLoc[0] - buildLoc[0]), 2) +
+			   pow(abs(robLoc[1] - buildLoc[1]), 2));
+	 if(diff < min_dist)
+	 {
+	    min_dist = diff;
+	    xF=x;
+	    zF=z;
+	    lF=l;
+	 }
          ptr++;
       }
    }
-   cout << "END MESSAGE---------------------------------"<< endl;
+   myCity.attackBuilding(xF,zF,lF);
+   }
 }

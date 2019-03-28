@@ -65,7 +65,7 @@ City::City(int xSize, int zSize) {
 }
 
 void City::drawCity(double blockSize, GLenum mode) {
-   int buildingsDrawn = 0;
+   int buildingsDrawn = 1;
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
    // Centre city on (0,0)
@@ -82,15 +82,16 @@ void City::drawCity(double blockSize, GLenum mode) {
 
 	    // Move to gridspace location
 	    glTranslatef(blockSize * j, 0, blockSize * i);
-
             // Draw road
-	    glBegin(GL_QUADS);
-	    glColor3f(0.1, 0.1, 0.1);
-	    glVertex3f(blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, blockSize / 2);
-	    glVertex3f(blockSize / 2, 0, blockSize / 2);
-	    glEnd();
+	    if(mode == GL_RENDER) {
+	       glBegin(GL_QUADS);
+	       glColor3f(0.1, 0.1, 0.1);
+	       glVertex3f(blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, blockSize / 2);
+	       glVertex3f(blockSize / 2, 0, blockSize / 2);
+	       glEnd();
+	    }
 	    glPopMatrix();
 	 }
 
@@ -102,14 +103,15 @@ void City::drawCity(double blockSize, GLenum mode) {
 	    glTranslatef(blockSize * j, 0, blockSize * i);
 
 	    // Draw grass under building space
-	    glBegin(GL_QUADS);
-	    glColor3f(0.376, 0.502, 0.22);
-	    glVertex3f(blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, -blockSize / 2);
-	    glVertex3f(-blockSize / 2, 0, blockSize / 2);
-	    glVertex3f(blockSize / 2, 0, blockSize / 2);
-	    glEnd();
-
+	    if(mode == GL_RENDER) {
+	       glBegin(GL_QUADS);
+	       glColor3f(0.376, 0.502, 0.22);
+	       glVertex3f(blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, -blockSize / 2);
+	       glVertex3f(-blockSize / 2, 0, blockSize / 2);
+	       glVertex3f(blockSize / 2, 0, blockSize / 2);
+	       glEnd();
+	    }
 	    // For every building slot on the block
 	    for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
 	       glPushMatrix();
@@ -131,8 +133,7 @@ void City::drawCity(double blockSize, GLenum mode) {
 
 		  // For building selection
 		  if(mode == GL_SELECT) {
-		     buildingsDrawn++;
-		     glLoadName(buildingsDrawn);
+		     glLoadName(buildingsDrawn++);
 		  }
 		  
                   // Draw building
@@ -183,33 +184,62 @@ int City::countBuildings() {
 }
 
 
-void City::attackBuilding(int index) {
-   if(index <= this -> countBuildings()){
-      int count = 0;
-      for(unsigned int i = 0; i < cityLayout.size(); i++) {
-	 for(unsigned int j = 0; j < cityLayout[i].size(); j++) {
-	    for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
-	       if(cityLayout[i][j].buildingsOnBlock[k]) {
-		  count++;
+void City::countIndex(int index, int &x, int &z, int &l) {
+   int count = 0;
+   for(unsigned int i = 0; i < cityLayout.size(); i++) {
+      for(unsigned int j = 0; j < cityLayout[i].size(); j++) {
+	 for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
+	    if(cityLayout[i][j].buildingsOnBlock[k])
+	       count++;
+	    if(count == index) {
+	       x=i;
+	       z=j;
+	       l=k;
+	       return;
+	    }
+	 }
+      }
+   }
+   return;
+   // return count;
+}
 
-		  if(count == index) {
+
+
+
+
+void City::attackBuilding(int x, int z, int l) {
+   int i=x;
+   int j=z;
+   int k=l;
+//   if(index <= this -> countBuildings()){
+//      int count = 0;
+   //     for(unsigned int i = 0; i < cityLayout.size(); i++) {
+//	 for(unsigned int j = 0; j < cityLayout[i].size(); j++) {
+//	    for(unsigned int k = 0; k < cityLayout[i][j].buildingsOnBlock.size(); k++) {
+//	       if(cityLayout[i][j].buildingsOnBlock[k]) {
+//		  count++;
+
+//		  if(count == index) {
+		     //This is need to "destroy" the object given these 3 coords
+		     //however we decide to "destroy" the objects
+		     /* cout << " BUILDING values for index " << count<<endl;
+		     cout << "RobotX: " << RX << endl;
+		     cout << "RobotZ: " << RZ << endl;
+		     cout << "[i] " << i <<endl;
+		     cout << "[j] " << j <<endl;
+		     cout << "[k] " << k <<endl;*/
+		     
 		     cityLayout[i][j].buildingsOnBlock[k] -> reduceHealth(1);
 		     if(cityLayout[i][j].buildingsOnBlock[k] -> getBuildingHealth() == 0) {
 			delete cityLayout[i][j].buildingsOnBlock[k];
 			cityLayout[i][j].buildingsOnBlock[k] = nullptr;
 		     }
-		     //This is need to "destroy" the object given these 3 coords
-		     //however we decide to "destroy" the objects
-		     //cout << " BUILDING values for index " << count<<endl;
-		     //cout << "[i] " << i <<endl;
-		     //cout << "[j] " << j <<endl;
-		     //cout << "[k] " << k <<endl;
-		     //return;
-		  
-		  }
-	       } 
-	    }
-	 }
-      }
-   }
+		     
+//		  }
+//	       } 
+//	    }
+//	 }
+//      }
+//   }
 }

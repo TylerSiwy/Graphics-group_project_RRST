@@ -14,7 +14,7 @@ class Robot {
    Robot();
    void setHeadRotationAngle(float newAngle);
    int smoothRotate(float angle); // Smoothly rotates the robot's head
-   void draw(float scale); //Draws all compenents of the robot
+   void draw(float scale,bool paused); //Draws all compenents of the robot
   protected:
    //All other components should be dynamically sized from headScale
    float headScale;
@@ -43,11 +43,11 @@ class Robot {
   private:
    void drawCube(float xScale, float yScale, float zScale,
 		 float xTrans, float yTrans, float zTrans);
-   void drawAndRotateHead(); //Draws the head and handles it's rotation
-   void drawHead(); //Draws the head, including eyes, antenna, and neck
+   void drawAndRotateHead(bool paused); //Draws the head and handles it's rotation
+   void drawHead(bool paused); //Draws the head, including eyes, antenna, and neck
    void drawEyes(); //Draws only the eyes
-   void drawAntenna(); //Draws only the antenna
-   void rotateAntenna(); //Does the antenna's rotation
+   void drawAntenna(bool paused); //Draws only the antenna
+   void rotateAntenna(bool paused); //Does the antenna's rotation
    void drawNeck(); //Draws only the neck
    void drawBody(); //Draws the body, including the backTriangles
    void drawBackTriangles(); //Draws only the backTriangles
