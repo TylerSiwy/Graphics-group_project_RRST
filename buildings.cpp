@@ -193,13 +193,13 @@ void Building::drawCylinder() {
    GLUquadric *quad = gluNewQuadric();
    glPushMatrix();
    glRotatef(-90, 1, 0, 0);
-   glColor3f(0.75, 0.44, 0.12);
+   glColor3f(0.41, 0.29, 0.52);
    gluCylinder(quad, 1, 1, 1, 20, 20);
    glPopMatrix();
 
 
    glPushMatrix();
-   glColor3f(0.75*1.1, 0.44*1.1, 0.12*1.1);
+   glColor3f(0.41*1.1, 0.29*1.1, 0.52*1.1);
    glTranslatef(0, 1, 0);
    glRotatef(-90, 1, 0, 0);
    gluDisk(quad, 0, 1, 20, 20);
