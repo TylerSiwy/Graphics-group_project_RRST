@@ -48,73 +48,6 @@ void UnbreakableBuilding::reduceHealth(int damage){
    buildingHealth -= damage;
 }
 
-void Building::drawCube(float xScale, float yScale, float zScale,
-	      float xTrans, float yTrans, float zTrans){  
-   glPushMatrix();
-   glTranslatef(xTrans ,yTrans, zTrans);
-   /*Cutting these in half since each vertex is the scale distance from the
-     centerpoint and we want it to be to the scale provided, not twice as large.
-     We could probably find a better solution later. */
-   /*xScale = xScale / 2;
-   yScale = yScale / 2;
-   zScale = zScale / 2;*/
-   // Puke Green - FRONT
-   glBegin(GL_POLYGON);
-   glColor3f(0.1, 0.5, 0.5);
-   glVertex3f(xScale, -yScale, -zScale); 
-   glVertex3f(xScale, yScale, -zScale); 
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(-xScale, -yScale, -zScale); 
-   glEnd();
- 
-   // Brown Face - BACK
-   glBegin(GL_POLYGON);
-   glColor3f(0.8, 0.5, 0.3);  
-   glVertex3f(-xScale, -yScale, zScale);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(xScale, yScale, zScale);
-   glVertex3f(xScale, -yScale, zScale);
-   glEnd();
- 
-   // Purple side - RIGHT
-   glBegin(GL_POLYGON);
-   glColor3f(1.0, 0.0, 1.0);
-   glVertex3f( xScale, -yScale, zScale);
-   glVertex3f( xScale, yScale, zScale);
-   glVertex3f( xScale, yScale, -zScale);
-   glVertex3f( xScale, -yScale, -zScale);
-   glEnd();
- 
-   // Green side - LEFT
-   glBegin(GL_POLYGON);
-   glColor3f(0.0, 1.0, 0.0);
-   glVertex3f(-xScale, -yScale, -zScale);
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(-xScale, -yScale, zScale);
-   glEnd();
- 
-   // Blue side - TOP
-   glBegin(GL_POLYGON);
-   glColor3f(0.0, 0.0, 1.0);
-   glVertex3f(-xScale, yScale, zScale);
-   glVertex3f(-xScale, yScale, -zScale);
-   glVertex3f(xScale, yScale, -zScale);
-   glVertex3f(xScale, yScale, zScale);
-   glEnd();
- 
-   // Red side - BOTTOM
-   glBegin(GL_POLYGON);
-   glColor3f(1.0, 0.0, 0.0);
-   glVertex3f(-xScale, -yScale, -zScale);
-   glVertex3f(-xScale, -yScale, zScale);
-   glVertex3f(xScale, -yScale, zScale);
-   glVertex3f(xScale, -yScale, -zScale);
-   glEnd();
-
-   glPopMatrix();
-}
-
 
 void Building::drawRectBuilding(float xScale, float yScale, float zScale,
 		  float xTrans, float yTrans, float zTrans,
@@ -235,19 +168,40 @@ void Building::drawPyramidBuilding(float scale,
 }
 
 void Building::drawCylinderBuilding(float scale){
-   float height = scale*2.75;
-   float radiusScalar = 0.5;
+   glPushMatrix();
+   glScalef(scale/2, scale*2, scale/2);
+   drawCylinder();
+   glTranslatef(0, 1, 0);
+
+   glPushMatrix();
+
+   glScalef(0.75, 0.75, 0.75);
+   drawCylinder();
+   glTranslatef(0, 1, 0);
+   
+   glPushMatrix();
+
+   glScalef(0.75, 0.75, 0.75);
+   drawCylinder();
+  
+   glPopMatrix();
+   glPopMatrix();
+   glPopMatrix();
+}
+
+void Building::drawCylinder() {
    GLUquadric *quad = gluNewQuadric();
    glPushMatrix();
    glRotatef(-90, 1, 0, 0);
-   glColor3f(0.44, 0.26, 0.03);
-   gluCylinder(quad, scale*radiusScalar, scale*radiusScalar, height, 20, 20);
+   glColor3f(0.75, 0.44, 0.12);
+   gluCylinder(quad, 1, 1, 1, 20, 20);
    glPopMatrix();
-   
+
+
    glPushMatrix();
-   glColor3f(0.44*1.1, 0.26*1.1, 0.03*1.1);
-   glTranslatef(0, height, 0);
+   glColor3f(0.75*1.1, 0.44*1.1, 0.12*1.1);
+   glTranslatef(0, 1, 0);
    glRotatef(-90, 1, 0, 0);
-   gluDisk(quad, 0, scale*radiusScalar, 20, 20); //The disk on 
+   gluDisk(quad, 0, 1, 20, 20);
    glPopMatrix();
 }
