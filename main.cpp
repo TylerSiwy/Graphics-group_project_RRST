@@ -15,8 +15,8 @@ using namespace std;
 // Window Options
 int WindowWidth = 700;
 int WindowHeight = 700;
-const char* WindowName = "Robust Robot Rampaging Rudely";
-
+//const char* WindowName = "Robust Robot Randomly Rampaging Rudely";
+const char* WindowName = "Super Tall Rampaging Robot, STRR";
 int WindowID;
 
 
@@ -267,7 +267,7 @@ void goodKeyboard(unsigned char key, int x, int y) {
 	    // This closes the program.
 	    exit(0);
 	 default:
-	    printf ("KP: No action for %d.\n", key);
+	    // printf ("KP: No action for %d.\n", key);
 	    break;
       }
    }
@@ -300,19 +300,21 @@ void Keyboard(unsigned char key, int x, int y) {
 		  }
 		  break;
 	    }
-
 	    break;
+	    
 	 case 'a':
 	    //turn robot right
+	    if(robotX % 2 == 0 && robotZ % 2 == 0 ){
 	    robotAngle -= 90;
 	    while(robotAngle < 0)
-	       robotAngle += 360;
+	       robotAngle += 360;}
 	    break;
 	 case 'q':
 	    //turn robot left
+	    if(robotX % 2 == 0 && robotZ % 2 == 0 ){
 	    robotAngle += 90;
 	    while(robotAngle >= 360)
-	       robotAngle -= 360;
+	       robotAngle -= 360;}
 	    break;
 	 case 'r':
 	    robotZ = robotX = 0;
@@ -327,17 +329,27 @@ void Keyboard(unsigned char key, int x, int y) {
 	    // This closes the program.
 	    exit(0);
 	 default:
-	    printf ("KP: No action for %d.\n", key);
+	    //  printf ("KP: No action for %d.\n", key);
 	    break;
       }  
    }
 }
 
 void myKeyboardUpKey(unsigned char key, int x, int y){
+    int j=200;
    switch(key){
       case 'p': //pauses the game, press again to unpause
 	 paused = !paused;
 	 //cout << paused;
+	 break;
+      case 'g': //pauses the game, press again to unpause
+	 // for(int i =0; i <600; i++){
+	 cout << "TACTICAL NUKE INCOMING!" << endl;
+	 for(int i=10; i<650; i+=10){
+	    //  for(int j=160; j<450; j+=10){
+	     Mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, i,j);
+	             glFlush();
+	    }
 	 break;
       default:
 	 break;
@@ -351,6 +363,8 @@ void moveRobot(){
 }
 
 void Mouse(int button, int state, int x, int y) {
+   //    cout << x <<"Y: " << y << endl;
+   //cout <<" X: "<< robotX <<" Z: " << robotZ << endl;
    if(paused==false){
       if(canShoot==true){
 	 if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
@@ -373,8 +387,6 @@ void Mouse(int button, int state, int x, int y) {
 	    glLoadIdentity ();
 	    gluPickMatrix ((GLdouble) x, (GLdouble) (viewport[3] - y), 
 			   0.1, 0.1, viewport);
-//	gluPerspective(50, 1, 5, 1000);
-	    //gluOrtho2D (-0.5,0.5,-0.5,0.5);
 
 	    glMatrixMode(GL_MODELVIEW);
 	    glPushMatrix();
@@ -387,11 +399,8 @@ void Mouse(int button, int state, int x, int y) {
 	    glPopMatrix ();
 	    glFlush ();
 
-	    hits = glRenderMode (GL_RENDER);//RENDER
+	    hits = glRenderMode (GL_RENDER);
 	    processHits (hits, selectBuf);
-	    //This is in zhangs example but breaks
-	    //the program when used for our program
-	    //	glutPostRedisplay();
 	 }
       }
    }
@@ -421,9 +430,7 @@ void Display() {
    
 	
    glutSwapBuffers();
-   /////////R changes
    glFlush();
-   /////////R changes
 }
 
 
