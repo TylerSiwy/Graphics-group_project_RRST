@@ -244,15 +244,17 @@ void goodKeyboard(unsigned char key, int x, int y) {
 	    break;
 	 case 'd':
 	    //turn robot right
+	    if(robotX % 2 == 0 && robotZ % 2 == 0 ){
 	    robotAngle -= 90;
 	    while(robotAngle < 0)
-	       robotAngle += 360;
+	       robotAngle += 360;}
 	    break;
 	 case 'a':
 	    //turn robot left
+	    if(robotX % 2 == 0 && robotZ % 2 == 0 ){
 	    robotAngle += 90;
 	    while(robotAngle >= 360)
-	       robotAngle -= 360;
+	       robotAngle -= 360;}
 	    break;
 	 case 'r':
 	    robotZ = robotX = 0;
@@ -319,57 +321,47 @@ void Keyboard(unsigned char key, int x, int y) {
 	 case 'r':
 	    robotZ = robotX = 0;
 	    robotAngle = 0;
-	    //return the robot to the origin if the robot is on the boundary
-	    //do nothing if not on boundary
 	    break;
 	    case '0':
 	    glutKeyboardFunc(&goodKeyboard);
 	    break;
 	 case 27:
-	    // This closes the program.
 	    exit(0);
 	 default:
-	    //  printf ("KP: No action for %d.\n", key);
 	    break;
       }  
    }
 }
 
 void myKeyboardUpKey(unsigned char key, int x, int y){
-    int j=200;
+   int j=200;
    switch(key){
-      case 'p': //pauses the game, press again to unpause
-	 paused = !paused;
-	 //cout << paused;
-	 break;
-      case 'g': //pauses the game, press again to unpause
-	 // for(int i =0; i <600; i++){
-	 cout << "TACTICAL NUKE INCOMING!" << endl;
-	 for(int i=10; i<650; i+=10){
-	    //  for(int j=160; j<450; j+=10){
-	     Mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, i,j);
-	             glFlush();
-	    }
-	 break;
-      default:
-	 break;
+      paused = !paused;
+      break;
+      case 'g':
+	 for(int i=10; i<650; i+=10)
+	 {
+	    Mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, i,j);
+	    glFlush();
+	       }
+
+	    break;
+	    default:
+	       break;
+	 }
+	 if(key == 27)
+	    exit(0); // This closes the program when paused.
    }
-   if(key == 27)
-      exit(0); // This closes the program when paused.
-}
 
 void moveRobot(){
    // Nothing here
 }
 
 void Mouse(int button, int state, int x, int y) {
-   //    cout << x <<"Y: " << y << endl;
-   //cout <<" X: "<< robotX <<" Z: " << robotZ << endl;
    if(paused==false){
       if(canShoot==true){
 	 if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
 	 {
-	    //  printf ("mouseX %d mouseY %d\n",x,y);
 	    GLuint selectBuf[SIZE];
 	    GLint hits;
 	    GLint viewport[4];
@@ -412,7 +404,6 @@ void Display() {
 	
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   //gluOrtho2D (-200,200,-200,200);
    gluPerspective(50, 1, 5, 1000);
    gluLookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
 	
