@@ -194,7 +194,7 @@ void Building::drawCylinder() {
    glPushMatrix();
    glRotatef(-90, 1, 0, 0);
    glColor3f(0.41, 0.29, 0.52);
-   gluCylinder(quad, 1, 1, 1, 20, 20);
+   gluCylinder(quad, 1, 1, 1, 10, 10);
    glPopMatrix();
 
 
@@ -202,6 +202,6 @@ void Building::drawCylinder() {
    glColor3f(0.41*1.1, 0.29*1.1, 0.52*1.1);
    glTranslatef(0, 1, 0);
    glRotatef(-90, 1, 0, 0);
-   gluDisk(quad, 0, 1, 20, 20);
+   gluDisk(quad, 0, 1, 10, 10);
    glPopMatrix();
 }
